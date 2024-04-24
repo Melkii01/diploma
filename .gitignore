@@ -1,0 +1,10 @@
+.idea
+
+backend/node_modules
+backend/.idea
+
+frontend/node_modules
+frontend/dist
+frontend/.idea
+frontend/.vscode
+frontend/.angular
