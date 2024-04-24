@@ -1,0 +1,9 @@
+@import "variables";
+
+@mixin hover-color {
+  transition: all .3s;
+
+  &:hover {
+    color: $light-blue-color-hover;
+  }
+}

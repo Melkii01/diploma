@@ -1,0 +1,73 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.header {
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 40px;
+    padding-bottom: 40px;
+
+    font-family: $font-family;
+    font-weight: 500;
+    font-size: 16px;
+
+    .header-nav {
+      margin-right: 257px;
+
+
+      ul {
+        display: flex;
+        align-items: center;
+        padding: 0;
+        margin-left: 40px;
+
+        li {
+          list-style: none;
+          margin-right: 30px;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          a {
+            text-decoration: none;
+            color: $blue-color;
+            @include hover-color;
+          }
+        }
+      }
+    }
+
+    .header-phone {
+      color: $light-blue-color;
+      text-decoration: none;
+      @include hover-color;
+    }
+
+    .header-auth {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-decoration: none;
+      cursor: pointer;
+
+      &:hover .header-auth-user {
+        color: $light-blue-color-hover;
+      }
+
+      .header-auth-icon {
+        margin-right: 7px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .header-auth-user {
+        color: $blue-color;
+        transition: all .3s;
+      }
+    }
+  }
+}
