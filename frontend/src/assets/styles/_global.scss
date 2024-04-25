@@ -1,5 +1,6 @@
 @import "variables";
 @import "mixins";
+
 html, body {
   margin: 0;
   padding: 0;
@@ -26,7 +27,11 @@ html, body {
   font-weight: 500;
   font-size: 16px;
   color: #fff;
-  @include hover-color;
+  transition: all .3s;
+
+  &:hover{
+    background-color: $light-blue-color-hover;
+  }
 
   //&.button-transparent {
   //  background-color: transparent;
@@ -71,4 +76,30 @@ html, body {
   //  }
   //}
 }
+
+// Инпуты
+.input {
+  border: 2px solid $light-blue-color;
+  border-radius: 3px;
+  padding: 17px 20px;
+  box-sizing: border-box;
+  font-family: $font-family;
+  font-weight: 400;
+  font-size: 14px;
+  color: #a8aba7;
+}
+//
+//.small-input {
+//  border: 1px solid #6cac72;
+//  border-radius: 5px;
+//  text-align: center;
+//  padding: 2px;
+//  box-sizing: border-box;
+//  width: 40px;
+//  height: 28px;
+//  font-family: $font-family;
+//  font-weight: 400;
+//  font-size: 18px;
+//  color: #a8aba7;
+//}
 

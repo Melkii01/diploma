@@ -1,0 +1,20 @@
+@import "../../../../assets/styles/auth-form";
+
+.login .container {
+  display: flex;
+  justify-content: space-between;
+  padding-top: 120px;
+  padding-bottom: 120px;
+
+  .auth-checkbox {
+    align-items: center;
+  }
+
+  .page-image {
+    margin-left: 20px;
+
+    img {
+      vertical-align: bottom;
+    }
+  }
+}
