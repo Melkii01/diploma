@@ -7,7 +7,6 @@
   .container {
     display: flex;
     flex-direction: column;
-    //justify-content: left;
     align-items: center;
     padding-top: 40px;
     padding-bottom: 54px;
@@ -41,7 +40,7 @@
             a {
               text-decoration: none;
               color: $blue-color;
-              @include hover-color;
+              @include hover-color-light-blue;
             }
           }
         }
@@ -82,7 +81,7 @@
           a {
             text-decoration: none;
             color: $blue-color;
-            @include hover-color;
+            @include hover-color-light-blue;
           }
 
           .button {
@@ -95,9 +94,15 @@
 
         .footer-info-item-links {
           display: flex;
+
           a {
             display: flex;
             margin-right: 12px;
+            transition: all .3s;
+
+            &:hover svg path {
+              fill: $light-blue-color
+            }
 
             &:last-child {
               margin-right: 0;
@@ -110,7 +115,7 @@
     .footer-right {
       align-self: start;
       font-size: 16px;
-      color: #709fdc;
+      color: $light-blue-color;
     }
   }
 }

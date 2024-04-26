@@ -34,7 +34,7 @@
           a {
             text-decoration: none;
             color: $blue-color;
-            @include hover-color;
+            @include hover-color-light-blue;
           }
         }
       }
@@ -43,7 +43,7 @@
     .header-phone {
       color: $light-blue-color;
       text-decoration: none;
-      @include hover-color;
+      @include hover-color-blue;
     }
 
     .header-auth {
@@ -54,7 +54,7 @@
       cursor: pointer;
 
       &:hover .header-auth-user {
-        color: $light-blue-color-hover;
+        color: $light-blue-color;
       }
 
       .header-auth-icon {

@@ -1,9 +1,31 @@
 @import "variables";
 
-@mixin hover-color {
+@mixin hover-color-blue {
   transition: all .3s;
 
   &:hover {
     color: $light-blue-color-hover;
   }
+}
+
+@mixin hover-color-light-blue {
+  transition: all .3s;
+
+  &:hover {
+    color: $light-blue-color;
+  }
+}
+
+@mixin head-title {
+  font-family: $second-family;
+  font-weight: 400;
+  font-size: 38px;
+  color: $light-blue-color;
+}
+
+@mixin card-title {
+  font-family: $font-family;
+  font-weight: 500;
+  font-size: 20px;
+  color: $light-blue-color;
 }

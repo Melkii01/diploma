@@ -44,7 +44,7 @@
 
         a {
           color: $light-blue-color;
-          @include hover-color;
+          @include hover-color-blue;
         }
       }
     }
@@ -68,7 +68,7 @@
       text-decoration: none;
       margin-left: 7px;
       color: $light-blue-color;
-      @include hover-color;
+      @include hover-color-blue;
     }
   }
 }

@@ -1,0 +1,41 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.popular-articles-block {
+
+  .popular-articles-title {
+    @include head-title;
+    margin-bottom: 40px;
+  }
+
+  .popular-articles-items {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 40px;
+  }
+
+  .popular-articles-link {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+
+
+    a {
+      display: flex;
+      align-items: center;
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 20px;
+      color: $light-blue-color;
+      @include hover-color-blue;
+
+      &:hover svg path {
+        fill: $light-blue-color-hover
+      }
+
+      svg {
+        margin-left: 14px;
+      }
+    }
+  }
+}

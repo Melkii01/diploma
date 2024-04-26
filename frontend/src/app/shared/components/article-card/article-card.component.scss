@@ -1,0 +1,44 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.popular-articles-item {
+  width: 290px;
+
+  .popular-articles-item-image {
+    width: 290px;
+    height: 290px;
+    border-radius: 5px;
+    background-size: cover;
+    background-position: center;
+    margin-bottom: 20px;
+  }
+
+  .popular-articles-item-texts {
+    height: 224px;
+    margin-bottom: 20px;
+
+    .popular-articles-item-name {
+      font-weight: 500;
+      font-size: 20px;
+      line-height: 130%;
+      color: $light-blue-color;
+      margin-bottom: 20px;
+    }
+
+    .popular-articles-item-description {
+      font-size: 14px;
+      line-height: 130%;
+      color: $blue-color;
+    }
+  }
+
+  .popular-articles-item-action {
+    a {
+      font-size: 16px;
+      color: $light-blue-color;
+
+      @include hover-color-blue;
+
+    }
+  }
+}

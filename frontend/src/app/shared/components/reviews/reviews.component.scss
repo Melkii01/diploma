@@ -1,0 +1,51 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.reviews-block {
+  .reviews-title {
+    @include head-title;
+    margin-bottom: 20px;
+  }
+
+  .reviews-items {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .reviews-item {
+      padding: 30px;
+      border: 2px solid $light-blue-color;
+      border-radius: 5px;
+      width: 396px;
+      box-sizing: border-box;
+
+      .reviews-item-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 15px;
+
+        .reviews-item-image {
+          width: 60px;
+          height: 60px;
+          background-repeat: no-repeat;
+          background-position: center;
+          background-size: cover;
+          margin-right: 26px;
+        }
+
+        .reviews-item-user {
+          font-weight: 600;
+          font-size: 18px;
+          color: $light-blue-color;
+        }
+      }
+
+      .reviews-item-text {
+        font-size: 16px;
+        line-height: 140%;
+        color: $blue-color;
+        height: 132px;
+      }
+    }
+  }
+}
