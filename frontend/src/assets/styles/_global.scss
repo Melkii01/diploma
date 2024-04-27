@@ -49,10 +49,10 @@ html, body {
   //  }
   //}
 
-  //&:disabled {
-  //  background: gray;
-  //  cursor: not-allowed;
-  //}
+  &:disabled {
+    background: gray;
+    cursor: not-allowed;
+  }
 
   //&.button-in-cart span {
   //  &:first-child {
@@ -104,3 +104,8 @@ html, body {
 //  color: #a8aba7;
 //}
 
+
+// Красная рамка для валидации инпутов
+.input-invalid.ng-touched.ng-invalid{
+  border-color: red;
+}

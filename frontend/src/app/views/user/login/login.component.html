@@ -1,4 +1,4 @@
-<section class="login">
+<section class="login" [formGroup]="loginForm">
   <div class="container">
     <div class="auth-form">
       <div class="auth-title">
@@ -7,22 +7,24 @@
 
       <div class="auth-inputs">
         <div class="auth-input">
-          <input type="text" class="input" placeholder="Электронная почта">
+          <input type="text" class="input input-invalid" placeholder="Электронная почта"
+                 formControlName="email">
         </div>
 
         <div class="auth-input">
-          <input type="password" class="input" placeholder="Пароль">
+          <input type="password" class="input input-invalid" placeholder="Пароль"
+                 formControlName="password">
         </div>
 
         <div class="auth-checkbox">
-          <input type="checkbox" id="remember">
+          <input type="checkbox" id="remember" formControlName="rememberMe">
           <label for="remember">Запомнить меня</label>
         </div>
       </div>
 
 
       <div class="auth-button">
-        <button class="button">Войти</button>
+        <button class="button" [disabled]="loginForm.invalid" (click)="login()">Войти</button>
       </div>
 
       <div class="auth-link">
