@@ -3,6 +3,19 @@
 
 .popular-articles-item {
   width: 290px;
+  position: relative;
+
+  .popular-articles-category {
+    position: absolute;
+    top: 10px;
+    right: 9px;
+    padding: 10px 18px;
+    background: #fff;
+    border-radius: 5px;
+    font-size: 11px;
+    text-align: center;
+    color: $light-blue-color;
+  }
 
   .popular-articles-item-image {
     width: 290px;

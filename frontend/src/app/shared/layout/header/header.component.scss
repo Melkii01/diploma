@@ -53,6 +53,10 @@
       text-decoration: none;
       cursor: pointer;
 
+      &:hover .header-auth-icon svg path{
+        stroke: $light-blue-color;
+      }
+
       &:hover .header-auth-user {
         color: $light-blue-color;
       }
@@ -66,7 +70,7 @@
 
       .header-auth-user {
         color: $blue-color;
-        transition: all .3s;
+        //transition: all .3s;
       }
     }
   }

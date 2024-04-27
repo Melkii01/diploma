@@ -1,0 +1,126 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.articles {
+  .container {
+    padding-top: 80px;
+    padding-bottom: 120px;
+
+    .articles-title {
+      @include head-title;
+      margin-bottom: 40px;
+    }
+
+    .articles-filters {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 40px;
+
+      .articles-options {
+        display: flex;
+        flex-wrap: wrap;
+
+        .articles-option {
+          border: 1px solid $light-blue-color;
+          border-radius: 5px;
+          padding: 8px 20px;
+          font-size: 16px;
+          color: $light-blue-color;
+
+          display: flex;
+          align-items: center;
+          margin-right: 20px;
+
+          a {
+            text-decoration: none;
+            cursor: pointer;
+            display: flex;
+            margin-left: 8px;
+            transition: all .3s;
+
+            &:hover svg g line {
+              stroke: $light-blue-color-hover;
+            }
+          }
+        }
+      }
+
+      .articles-sorting {
+        a {
+          display: flex;
+          align-items: center;
+          text-decoration: none;
+          font-size: 16px;
+          color: $blue-color;
+          @include hover-color-light-blue;
+
+          &:hover svg path {
+            fill: $light-blue-color;
+          }
+
+          svg {
+            margin-left: 65px;
+            margin-top: 2px;
+          }
+        }
+      }
+    }
+
+    .articles-blocks {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 40px 24px;
+      margin-bottom: 60px;
+    }
+
+
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .pagination-arrow {
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+        &.disabled {
+          opacity: 0.5;
+        }
+      }
+
+      .pagination-pages {
+        margin-left: 10px;
+        margin-right: 10px;
+        display: flex;
+        align-items: center;
+
+        a.pagination-page {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          text-decoration: none;
+          width: 32px;
+          height: 46px;
+          margin-right: 15px;
+          cursor: pointer;
+          font-size: 20px;
+          color: $blue-color;
+
+          &.active {
+            color: #b9d5fd;
+          }
+
+          &:first-child {
+            margin-left: 40px;
+          }
+          &:last-child {
+            margin-right:40px;
+          }
+        }
+      }
+    }
+  }
+}

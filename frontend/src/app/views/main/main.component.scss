@@ -24,12 +24,12 @@
     }
 
     .services-items {
-      display: flex;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 25px;
 
       .services-item {
         width: 290px;
-        margin-right: 25px;
 
         &:last-child {
           margin-right: 0;
