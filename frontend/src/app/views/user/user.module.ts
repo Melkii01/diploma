@@ -17,7 +17,7 @@ import {MatSnackBarModule} from "@angular/material/snack-bar";
     CommonModule,
     UserRoutingModule,
     ReactiveFormsModule,
-    MatSnackBarModule
+
   ]
 })
 export class UserModule { }

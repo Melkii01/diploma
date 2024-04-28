@@ -8,6 +8,8 @@ import {CarouselComponent} from './components/carousel/carousel.component';
 import {PopularArticlesComponent} from './components/popular-articles/popular-articles.component';
 import {ArticleCardComponent} from './components/article-card/article-card.component';
 import {ReviewsComponent} from './components/reviews/reviews.component';
+import { LoaderComponent } from './components/loader/loader.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 
 @NgModule({
@@ -18,11 +20,13 @@ import {ReviewsComponent} from './components/reviews/reviews.component';
     CarouselComponent,
     PopularArticlesComponent,
     ArticleCardComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    LoaderComponent
   ],
   imports: [
     CommonModule,
-    RouterModule
+    RouterModule,
+    MatProgressSpinnerModule
   ],
   exports: [
     LayoutComponent,
@@ -31,7 +35,8 @@ import {ReviewsComponent} from './components/reviews/reviews.component';
     CarouselComponent,
     PopularArticlesComponent,
     ArticleCardComponent,
-    ReviewsComponent
+    ReviewsComponent,
+    LoaderComponent
   ]
 })
 export class SharedModule {

@@ -4,6 +4,7 @@ import {Observable, Subject, throwError} from "rxjs";
 import {environment} from "../../../environments/environment";
 import {LoginResponseType} from "../../../types/login-response.type";
 import {DefaultResponseType} from "../../../types/default-response.type";
+import {UserInfoResponseType} from "../../../types/user-info-response.type";
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +13,7 @@ export class AuthService {
   public accessTokenKey: string = 'accessToken';
   public refreshTokenKey: string = 'refreshToken';
   public userIdKey: string = 'userId';
+  public userInfo: string = 'userInfo';
 
   // Флаги нахождения пользователя в системе
   public isLogged$: Subject<boolean> = new Subject<boolean>();
@@ -51,7 +53,7 @@ export class AuthService {
     this.isLogged$.next(false);
   }
 
-  // Получить инфо о пользователе
+  // Получить id пользователя
   get userId(): string | null {
     return localStorage.getItem(this.userIdKey);
   }
@@ -65,14 +67,36 @@ export class AuthService {
     }
   }
 
+  // Получить инфо о пользователе с сервера
+  getUserInfoFromServer(): Observable<DefaultResponseType | UserInfoResponseType> {
+    return this.http.get<DefaultResponseType | UserInfoResponseType>(environment.api + 'users');
+  }
+
+  getUserInfoFromLocalStorage(): UserInfoResponseType | null {
+    const userInfo: string | null = localStorage.getItem(this.userInfo);
+    if (userInfo) {
+      return JSON.parse(userInfo);
+    }
+    return null;
+  }
+
+  setUserInfoToLocalStorage(info: UserInfoResponseType): void {
+    localStorage.setItem(this.userInfo, JSON.stringify(info));
+  }
+
+  removeUserInfoToLocalStorage(): void {
+    localStorage.removeItem(this.userInfo);
+  }
+
+
   // Зарегистрироваться
-  // signup(email: string, password: string, passwordRepeat: string): Observable<DefaultResponseType | LoginResponseType> {
-  //   return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'signup', {
-  //     email,
-  //     password,
-  //     passwordRepeat
-  //   })
-  // }
+  signup(email: string, password: string, passwordRepeat: string): Observable<DefaultResponseType | LoginResponseType> {
+    return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'signup', {
+      email,
+      password,
+      passwordRepeat
+    })
+  }
 
   // Авторизоваться
   login(email: string, password: string, rememberMe: boolean): Observable<DefaultResponseType | LoginResponseType> {
@@ -97,7 +121,8 @@ export class AuthService {
   // Обновить токены
   refresh(): Observable<LoginResponseType | DefaultResponseType> {
     const tokens = this.getTokens();
-    if (tokens && tokens.refreshToken) {
+    if (tokens && tokens.refreshToken
+    ) {
       return this.http.post <LoginResponseType | DefaultResponseType>(environment.api + 'refresh', {
         refreshToken: tokens.refreshToken
       })
