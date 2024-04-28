@@ -10,6 +10,7 @@ import {ArticleCardComponent} from './components/article-card/article-card.compo
 import {ReviewsComponent} from './components/reviews/reviews.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {MatMenuModule} from "@angular/material/menu";
 
 
 @NgModule({
@@ -26,7 +27,8 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
   imports: [
     CommonModule,
     RouterModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatMenuModule
   ],
   exports: [
     LayoutComponent,

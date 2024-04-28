@@ -5,6 +5,7 @@ import {DefaultResponseType} from "../../../../types/default-response.type";
 import {LoginResponseType} from "../../../../types/login-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-header',
@@ -14,10 +15,11 @@ import {MatSnackBar} from "@angular/material/snack-bar";
 export class HeaderComponent implements OnInit {
   isLogged: boolean = false;
   userInfo: UserInfoResponseType | null = null;
-  userInfoName: string = 'Войти';
+  userInfoName: string = '';
 
   constructor(private authService: AuthService,
-              private _snackBar: MatSnackBar) {
+              private _snackBar: MatSnackBar,
+              public router: Router) {
     // Устанавливаем флаг авторизации
     this.isLogged = this.authService.getIsLoggedIn();
 
@@ -69,6 +71,26 @@ export class HeaderComponent implements OnInit {
         });
       }
     });
+  }
+
+  logout(): void {
+    this.authService.logout()
+      .subscribe({
+        next: () => {
+          this.doLogout();
+        },
+        error: () => {
+          this.doLogout();
+        }
+      });
+  }
+
+  doLogout() {
+    this.authService.removeTokens();
+    this.authService.userId = null;
+    this.authService.removeUserInfoOnLocalStorage();
+    this._snackBar.open('Вы вышли из системы');
+    this.router.navigate(['/']);
   }
 
 }

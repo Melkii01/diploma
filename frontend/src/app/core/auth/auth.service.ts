@@ -84,17 +84,17 @@ export class AuthService {
     localStorage.setItem(this.userInfo, JSON.stringify(info));
   }
 
-  removeUserInfoToLocalStorage(): void {
+  removeUserInfoOnLocalStorage(): void {
     localStorage.removeItem(this.userInfo);
   }
 
 
   // Зарегистрироваться
-  signup(email: string, password: string, passwordRepeat: string): Observable<DefaultResponseType | LoginResponseType> {
+  signup(name: string, email: string, password: string): Observable<DefaultResponseType | LoginResponseType> {
     return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'signup', {
+      name,
       email,
-      password,
-      passwordRepeat
+      password
     })
   }
 
