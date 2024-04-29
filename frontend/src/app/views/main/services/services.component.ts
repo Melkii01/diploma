@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {ModalService} from "../../../shared/services/modal.service";
 
 @Component({
   selector: 'app-services',
@@ -7,9 +8,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ServicesComponent implements OnInit {
 
-  constructor() { }
+  constructor(private modalService: ModalService) {
+  }
 
   ngOnInit(): void {
   }
 
+  openModal(value: string) {
+    this.modalService.show('Заявка на услугу', value);
+  }
 }

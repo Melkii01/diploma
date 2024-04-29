@@ -12,6 +12,10 @@ import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatMenuModule} from "@angular/material/menu";
 import { ContactsComponent } from './components/contacts/contacts.component';
 import {CarouselModule} from "primeng/carousel";
+import { ModalComponent } from './components/modal/modal.component';
+import {DialogModule} from "primeng/dialog";
+import {ButtonModule} from "primeng/button";
+import {ReactiveFormsModule} from "@angular/forms";
 
 @NgModule({
   declarations: [
@@ -22,13 +26,17 @@ import {CarouselModule} from "primeng/carousel";
     ArticleCardComponent,
     ReviewsComponent,
     LoaderComponent,
-    ContactsComponent
+    ContactsComponent,
+    ModalComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
     MatMenuModule,
+    DialogModule,
+    ButtonModule,
+    ReactiveFormsModule,
   ],
   exports: [
     LayoutComponent,
@@ -38,7 +46,8 @@ import {CarouselModule} from "primeng/carousel";
     ArticleCardComponent,
     ReviewsComponent,
     LoaderComponent,
-    ContactsComponent
+    ContactsComponent,
+    ModalComponent
   ]
 })
 export class SharedModule {

@@ -4,17 +4,76 @@
   .container {
     padding-bottom: 120px;
 
-    .p-carousel .p-carousel-content .p-carousel-prev {
-      padding-bottom: 100px;
+    // Стили для карусели
+    ::ng-deep .p-carousel .p-carousel-content {
+      position: relative;
+      .p-carousel-container {
+        //position: relative;
 
+
+        .p-carousel-prev, .p-carousel-next {
+          position: absolute;
+          z-index: 100;
+
+          &:hover .p-carousel-prev-icon::before {
+            color: $light-blue-color
+          }
+
+          .p-carousel-prev-icon::before {
+            font-size: 28px;
+            color: white;
+          }
+
+          &:hover {
+            background-color: transparent;
+            color: $light-blue-color
+          }
+        }
+
+        .p-carousel-prev {
+          left: 0;
+        }
+
+        .p-carousel-next {
+          right: 0;
+        }
+      }
+
+      .p-carousel-indicators {
+        position: absolute;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        z-index: 100;
+
+
+        .p-carousel-indicator {
+          margin-left: 10px;
+          margin-right: 10px;
+
+          button {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: transparent;
+            border: 1px solid white;
+          }
+        }
+
+        .p-highlight  button{
+          background: white;
+        }
+      }
     }
 
+    // Стили для блока внутри карусели
     .carousel-item {
       padding: 100px 80px;
       height: 500px;
       box-sizing: border-box;
       background-size: cover;
       background-repeat: no-repeat;
+
 
       .carousel-category {
         font-weight: 600;
@@ -27,11 +86,10 @@
       .carousel-title {
         font-size: 50px;
         color: #fff;
-        margin-bottom: 20px;
-        width: 610px;
+        width: 550px;
 
-        span {
-          color: $light-blue-color;
+        ::ng-deep span {
+          color: $light-blue-color !important;
         }
       }
 
@@ -39,16 +97,18 @@
         font-size: 24px;
         line-height: 130%;
         color: #fff;
-        margin-bottom: 30px;
+        margin-top: 20px;
+        margin-bottom: 10px;
         width: 456px;
       }
 
       .carousel-button {
         display: flex;
-        padding-top: 20px;
+        padding-top: 40px;
         width: 163px;
+        //align-self: end;
       }
+
     }
   }
 }
-

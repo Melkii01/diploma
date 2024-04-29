@@ -51,16 +51,18 @@
     <!--  </div>-->
 
 
-    <p-carousel [value]="blocks" styleClass="custom-carousel" [numVisible]="1" [numScroll]="1" [circular]="true" [autoplayInterval]="10000">
+    <p-carousel [value]="blocks" styleClass="custom-carousel" [numVisible]="1" [numScroll]="1" [circular]="true"
+                [autoplayInterval]="4000">
       <ng-template let-block pTemplate="item">
 
         <div class="carousel-item" style="background-image: url({{block.image}})">
+
           <div class="carousel-category">
             {{block.category}}
           </div>
 
-          <div class="carousel-title">
-            {{block.title}}
+          <div class="carousel-title" [innerHTML]="block.title">
+            <!--            {{block.title}}-->
           </div>
 
           <div class="carousel-text">
@@ -71,6 +73,7 @@
             <button class="button">Подробнее</button>
           </div>
         </div>
+
       </ng-template>
     </p-carousel>
 
