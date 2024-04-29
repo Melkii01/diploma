@@ -1,9 +1,8 @@
-import {AfterViewInit, Component, Input, OnInit} from '@angular/core';
+import { Component,  OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {ModalService} from "../../services/modal.service";
 import {RequestsService} from "../../services/requests.service";
 import {DefaultResponseType} from "../../types/default-response.type";
-import {LoginResponseType} from "../../types/login-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 
@@ -73,7 +72,7 @@ export class ModalComponent implements OnInit {
             setTimeout(() => {
               this.visibleBlock = true;
 
-            }, 1000);
+            }, 7000);
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.message) {

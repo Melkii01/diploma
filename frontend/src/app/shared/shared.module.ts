@@ -11,7 +11,6 @@ import { LoaderComponent } from './components/loader/loader.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatMenuModule} from "@angular/material/menu";
 import { ContactsComponent } from './components/contacts/contacts.component';
-import {CarouselModule} from "primeng/carousel";
 import { ModalComponent } from './components/modal/modal.component';
 import {DialogModule} from "primeng/dialog";
 import {ButtonModule} from "primeng/button";

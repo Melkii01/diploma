@@ -1,27 +1,26 @@
 <div class="popular-articles-item">
 
   <div class="popular-articles-category">
-    Таргет
+    {{ article.category }}
   </div>
 
   <div class="popular-articles-item-image"
-       style="background-image: url(assets/assets/images/104.png)">
+       style="background-image: url({{'/assets/assets/images/images/' + article.image}})">
 
   </div>
 
 
   <div class="popular-articles-item-texts">
     <div class="popular-articles-item-name">
-      Как произвести впечатление на нового клиента?
+      {{ article.title }}
     </div>
 
     <div class="popular-articles-item-description">
-      Поиск новых клиентов — это сложная задача не только для новичков, но и для опытных специалистов. Мы расскажем, как
-      справиться с волнением, завоевать доверие клиента и произвести на него потрясающее первое впечатление.
+      {{ article.description }}
     </div>
   </div>
 
   <div class="popular-articles-item-action">
-    <a href="#">Читать дальше</a>
+    <a routerLink="{{ 'articles/' + article.url }}">Читать дальше</a>
   </div>
 </div>

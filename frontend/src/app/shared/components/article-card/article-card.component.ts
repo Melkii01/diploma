@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {PopularArticlesResponseType} from "../../types/popular-articles-response.type";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-article-card',
@@ -6,8 +8,9 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./article-card.component.scss']
 })
 export class ArticleCardComponent implements OnInit {
-
-  constructor() { }
+  @Input() article!: PopularArticlesResponseType;
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
