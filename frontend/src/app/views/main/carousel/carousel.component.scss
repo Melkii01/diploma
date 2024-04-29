@@ -1,0 +1,54 @@
+@import "../../../../assets/styles/variables";
+
+.carousel {
+  .container {
+    padding-bottom: 120px;
+
+    .p-carousel .p-carousel-content .p-carousel-prev {
+      padding-bottom: 100px;
+
+    }
+
+    .carousel-item {
+      padding: 100px 80px;
+      height: 500px;
+      box-sizing: border-box;
+      background-size: cover;
+      background-repeat: no-repeat;
+
+      .carousel-category {
+        font-weight: 600;
+        font-size: 12px;
+        letter-spacing: 0.4em;
+        text-transform: uppercase;
+        color: $light-blue-color;
+      }
+
+      .carousel-title {
+        font-size: 50px;
+        color: #fff;
+        margin-bottom: 20px;
+        width: 610px;
+
+        span {
+          color: $light-blue-color;
+        }
+      }
+
+      .carousel-text {
+        font-size: 24px;
+        line-height: 130%;
+        color: #fff;
+        margin-bottom: 30px;
+        width: 456px;
+      }
+
+      .carousel-button {
+        display: flex;
+        padding-top: 20px;
+        width: 163px;
+      }
+    }
+  }
+}
+

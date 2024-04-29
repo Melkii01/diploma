@@ -36,6 +36,10 @@
             color: $blue-color;
             @include hover-color-light-blue;
           }
+
+          a.active {
+            color: $light-blue-color;
+          }
         }
       }
     }

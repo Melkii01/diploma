@@ -2,8 +2,8 @@ import {HttpEvent, HttpHandler, HttpInterceptor, HttpRequest} from "@angular/com
 import {catchError, finalize, Observable, switchMap, throwError} from "rxjs";
 import {Injectable} from "@angular/core";
 import {AuthService} from "./auth.service";
-import {LoginResponseType} from "../../../types/login-response.type";
-import {DefaultResponseType} from "../../../types/default-response.type";
+import {LoginResponseType} from "../../shared/types/login-response.type";
+import {DefaultResponseType} from "../../shared/types/default-response.type";
 import {Router} from "@angular/router";
 import {LoaderService} from "../../shared/services/loader.service";
 

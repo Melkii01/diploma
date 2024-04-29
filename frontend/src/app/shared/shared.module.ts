@@ -4,41 +4,41 @@ import {LayoutComponent} from './layout/layout.component';
 import {FooterComponent} from './layout/footer/footer.component';
 import {HeaderComponent} from './layout/header/header.component';
 import {RouterModule} from "@angular/router";
-import {CarouselComponent} from './components/carousel/carousel.component';
 import {PopularArticlesComponent} from './components/popular-articles/popular-articles.component';
 import {ArticleCardComponent} from './components/article-card/article-card.component';
 import {ReviewsComponent} from './components/reviews/reviews.component';
 import { LoaderComponent } from './components/loader/loader.component';
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {MatMenuModule} from "@angular/material/menu";
-
+import { ContactsComponent } from './components/contacts/contacts.component';
+import {CarouselModule} from "primeng/carousel";
 
 @NgModule({
   declarations: [
     LayoutComponent,
     FooterComponent,
     HeaderComponent,
-    CarouselComponent,
     PopularArticlesComponent,
     ArticleCardComponent,
     ReviewsComponent,
-    LoaderComponent
+    LoaderComponent,
+    ContactsComponent
   ],
   imports: [
     CommonModule,
     RouterModule,
     MatProgressSpinnerModule,
-    MatMenuModule
+    MatMenuModule,
   ],
   exports: [
     LayoutComponent,
     FooterComponent,
     HeaderComponent,
-    CarouselComponent,
     PopularArticlesComponent,
     ArticleCardComponent,
     ReviewsComponent,
-    LoaderComponent
+    LoaderComponent,
+    ContactsComponent
   ]
 })
 export class SharedModule {

@@ -1,8 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from "../../../core/auth/auth.service";
-import {UserInfoResponseType} from "../../../../types/user-info-response.type";
-import {DefaultResponseType} from "../../../../types/default-response.type";
-import {LoginResponseType} from "../../../../types/login-response.type";
+import {UserInfoResponseType} from "../../types/user-info-response.type";
+import {DefaultResponseType} from "../../types/default-response.type";
+import {LoginResponseType} from "../../types/login-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {Router} from "@angular/router";
@@ -18,7 +18,7 @@ export class HeaderComponent implements OnInit {
   userInfoName: string = '';
 
   constructor(private authService: AuthService,
-              private _snackBar: MatSnackBar,
+              private snackBar: MatSnackBar,
               public router: Router) {
     // Устанавливаем флаг авторизации
     this.isLogged = this.authService.getIsLoggedIn();
@@ -89,7 +89,7 @@ export class HeaderComponent implements OnInit {
     this.authService.removeTokens();
     this.authService.userId = null;
     this.authService.removeUserInfoOnLocalStorage();
-    this._snackBar.open('Вы вышли из системы');
+    this.snackBar.open('Вы вышли из системы');
     this.router.navigate(['/']);
   }
 

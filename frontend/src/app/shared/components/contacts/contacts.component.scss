@@ -1,0 +1,59 @@
+@import "variables";
+@import "mixins";
+
+.contacts-block {
+  display: flex;
+
+  .contacts-maps {
+    width: 607px;
+    height: 438px;
+  }
+
+  .contacts-info {
+    margin-left: 26px;
+    width: 501px;
+
+    .contacts-title {
+      @include head-title;
+    }
+
+    .contacts-item {
+      margin-top: 20px;
+
+      .contacts-item-name {
+        @include card-title;
+        margin-bottom: 10px;
+      }
+
+      .contacts-item-description {
+        font-size: 14px;
+        line-height: 130%;
+        color: $blue-color;
+
+        a {
+          color: $blue-color;
+          text-decoration: none;
+          @include hover-color-light-blue;
+        }
+      }
+
+      .contacts-item-links {
+        display: flex;
+        align-items: center;
+
+        a {
+          margin-right: 10px;
+          transition: all .3s;
+
+          &:last-child {
+            margin-right: 0;
+          }
+
+          &:hover svg path {
+            fill: $light-blue-color-hover;
+          }
+        }
+      }
+    }
+  }
+}

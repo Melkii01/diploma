@@ -2,9 +2,9 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable, Subject, throwError} from "rxjs";
 import {environment} from "../../../environments/environment";
-import {LoginResponseType} from "../../../types/login-response.type";
-import {DefaultResponseType} from "../../../types/default-response.type";
-import {UserInfoResponseType} from "../../../types/user-info-response.type";
+import {LoginResponseType} from "../../shared/types/login-response.type";
+import {DefaultResponseType} from "../../shared/types/default-response.type";
+import {UserInfoResponseType} from "../../shared/types/user-info-response.type";
 
 @Injectable({
   providedIn: 'root'

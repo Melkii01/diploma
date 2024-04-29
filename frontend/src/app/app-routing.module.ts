@@ -7,7 +7,10 @@ import {AuthForwardGuard} from "./core/auth/auth-forward.guard";
 const routes: Routes = [
   {
     path: '', component: LayoutComponent, children: [
-      {path: '', component: MainComponent},
+      {
+        path: '',
+        loadChildren: () => import('./views/main/main.module').then(m => m.MainModule)
+      },
       {
         path: '',
         loadChildren: () => import('./views/user/user.module').then(m => m.UserModule),

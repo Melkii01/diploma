@@ -1,0 +1,86 @@
+@import "../../../../assets/styles/variables";
+@import "../../../../assets/styles/mixins";
+
+.info {
+  .container {
+    padding-bottom: 120px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .info-block {
+      width: 703px;
+
+      .info-title {
+        @include head-title;
+        margin-bottom: 20px;
+      }
+
+      .info-description {
+        font-size: 14px;
+        line-height: 130%;
+        color: #1e1a2b;
+        margin-bottom: 40px;
+
+        span {
+          font-weight: 500;
+        }
+      }
+
+      .info-small-title {
+        font-family: $second-family;
+        font-weight: 400;
+        font-size: 26px;
+        color: $light-blue-color;
+        margin-bottom: 20px;
+      }
+
+      .info-advantages {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+
+        .info-advantage {
+          width: 316px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          .info-advantage-number-circle {
+            background-color: #b9d5fd;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            margin-right: 20px;
+            display: flex;
+            flex-grow: 0;
+            position: relative;
+
+            .info-advantage-number {
+              position: absolute;
+              top: -20px;
+              left: 5px;
+              font-family: $second-family;
+              font-weight: 500;
+              font-size: 50px;
+              color: $light-blue-color;
+              text-align: center;
+              width: 28px;
+            }
+          }
+
+          .info-advantage-text {
+            width: 256px;
+            font-size: 14px;
+            line-height: 130%;
+            color: #1e1a2b;
+
+            span {
+              font-weight: 500;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -2,8 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {Router} from "@angular/router";
 import {MatSnackBar} from "@angular/material/snack-bar";
-import {DefaultResponseType} from "../../../../types/default-response.type";
-import {LoginResponseType} from "../../../../types/login-response.type";
+import {DefaultResponseType} from "../../../shared/types/default-response.type";
+import {LoginResponseType} from "../../../shared/types/login-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AuthService} from "../../../core/auth/auth.service";
 
@@ -14,14 +14,14 @@ import {AuthService} from "../../../core/auth/auth.service";
 })
 export class LoginComponent implements OnInit {
   loginForm = this.fb.group({
-    email: ['', [Validators.required, Validators.email]],
+    email: ['', [Validators.required, Validators.pattern(/^[A-Z0-9._%+-]+@[A-Z0-9-]+.+.[A-Z]{2,4}$/i)]],
     password: ['', [Validators.required]],
     rememberMe: [false],
   })
 
   constructor(private fb: FormBuilder,
               private authService: AuthService,
-              private _snackBar: MatSnackBar,
+              private snackBar: MatSnackBar,
               private router: Router) {
   }
 
@@ -48,22 +48,22 @@ export class LoginComponent implements OnInit {
             }
 
             if (error) {
-              this._snackBar.open(error);
+              this.snackBar.open(error);
               throw new Error(error);
             }
 
             this.authService.setTokens(loginResponse.accessToken, loginResponse.refreshToken);
             this.authService.userId = loginResponse.userId;
 
-            this._snackBar.open('Вы успешно авторизовались');
+            this.snackBar.open('Вы успешно авторизовались');
             this.router.navigate(['/']);
 
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.message) {
-              this._snackBar.open(errorResponse.error.message);
+              this.snackBar.open(errorResponse.error.message);
             } else {
-              this._snackBar.open('Ошибка авторизации');
+              this.snackBar.open('Ошибка авторизации');
             }
           }
         });
