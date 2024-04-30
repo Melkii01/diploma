@@ -8,13 +8,13 @@ import {PopularArticlesComponent} from './components/popular-articles/popular-ar
 import {ArticleCardComponent} from './components/article-card/article-card.component';
 import {ReviewsComponent} from './components/reviews/reviews.component';
 import { LoaderComponent } from './components/loader/loader.component';
-import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
-import {MatMenuModule} from "@angular/material/menu";
 import { ContactsComponent } from './components/contacts/contacts.component';
 import { ModalComponent } from './components/modal/modal.component';
 import {DialogModule} from "primeng/dialog";
 import {ButtonModule} from "primeng/button";
 import {ReactiveFormsModule} from "@angular/forms";
+import {ProgressSpinnerModule} from "primeng/progressspinner";
+import {MenuModule} from 'primeng/menu';
 
 @NgModule({
   declarations: [
@@ -26,16 +26,16 @@ import {ReactiveFormsModule} from "@angular/forms";
     ReviewsComponent,
     LoaderComponent,
     ContactsComponent,
-    ModalComponent
+    ModalComponent,
   ],
   imports: [
     CommonModule,
     RouterModule,
-    MatProgressSpinnerModule,
-    MatMenuModule,
     DialogModule,
     ButtonModule,
     ReactiveFormsModule,
+    ProgressSpinnerModule,
+    MenuModule,
   ],
   exports: [
     LayoutComponent,

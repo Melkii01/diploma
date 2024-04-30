@@ -7,7 +7,6 @@ import {DefaultResponseType} from "../../shared/types/default-response.type";
 import {Router} from "@angular/router";
 import {LoaderService} from "../../shared/services/loader.service";
 
-// import {LoaderService} from "../../shared/services/loader.service";
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -16,6 +15,11 @@ export class AuthInterceptor implements HttpInterceptor {
               private loaderService: LoaderService) {
   }
 
+  /**
+   * Интерсептор при каждой отправке запросов, вставляет x-auth токен
+   * @param req перехваченный запрос
+   * @param next переделанный запрос
+   */
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
     this.loaderService.show();
 
@@ -41,27 +45,29 @@ export class AuthInterceptor implements HttpInterceptor {
       .pipe(
         finalize(() => this.loaderService.hide())
       )
-
   }
 
+  /**
+   * При возврате ошибки 401, обновляем accessToken, и отправляем запрос заново
+   * @param req перехваченный запрос
+   * @param next переделанный запрос
+   */
   handle401Error(req: HttpRequest<any>, next: HttpHandler) {
     return this.authService.refresh()
       .pipe(
         switchMap((result: LoginResponseType | DefaultResponseType) => {
           let error = '';
 
-          // Если ошибка есть с дефолтного значения
+          // Если ошибка есть записываем в переменную error
           if ((result as DefaultResponseType).error !== undefined) {
             error = (result as DefaultResponseType).message;
           }
-
-          // Если ошибка есть с логинного значения
           const refreshResult = result as LoginResponseType;
           if (!refreshResult.accessToken || !refreshResult.refreshToken || !refreshResult.userId) {
             error = 'Ошибка авторизации';
           }
 
-          // Если ошибка есть выводим её
+          // Если есть ошибка выводим ошибку и останавливаем функцию
           if (error) {
             return throwError(() => new Error(error));
           }

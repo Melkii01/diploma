@@ -57,7 +57,7 @@
         Войти
       </div>
     </a>
-    <a class="header-auth" *ngIf="isLogged" [matMenuTriggerFor]="menu">
+    <a class="header-auth" *ngIf="isLogged" (click)="menu.toggle($event)">
       <div class="header-auth-icon">
         <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path
@@ -76,10 +76,8 @@
         Привет, {{ userInfoName }}
       </div>
     </a>
-    <mat-menu #menu="matMenu">
-      <button mat-menu-item>
-        <span (click)="logout()">Выйти</span>
-      </button>
-    </mat-menu>
+
+    <!--Меню при клике на имя пользователя-->
+    <p-menu #menu [popup]="true" [model]="items"></p-menu>
   </div>
 </section>

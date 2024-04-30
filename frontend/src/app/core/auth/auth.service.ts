@@ -24,12 +24,18 @@ export class AuthService {
     this.isLogged = !!localStorage.getItem(this.accessTokenKey);
   }
 
-  // Узнаем в системе ли пользователь
+  /**
+   * Показывает в системе ли пользователь
+   */
   public getIsLoggedIn() {
     return this.isLogged;
   }
 
-  // Установить токены и флаг в системе
+  /**
+   * Устанавливает токены в local storage и флаг нахождения в системе
+   * @param accessToken токен
+   * @param refreshToken токен
+   */
   public setTokens(accessToken: string, refreshToken: string): void {
     localStorage.setItem(this.accessTokenKey, accessToken);
     localStorage.setItem(this.refreshTokenKey, refreshToken);
@@ -37,7 +43,9 @@ export class AuthService {
     this.isLogged$.next(true);
   }
 
-  // Взять токены
+  /**
+   * Получает токены из local storage
+   */
   public getTokens(): { accessToken: string | null, refreshToken: string | null } {
     return {
       accessToken: localStorage.getItem(this.accessTokenKey),
@@ -45,7 +53,9 @@ export class AuthService {
     }
   }
 
-  // Удалить токены
+  /**
+   * Удаляет токены в local storage и устанавливает флаг отсутствия в системе
+   */
   public removeTokens(): void {
     localStorage.removeItem(this.accessTokenKey);
     localStorage.removeItem(this.refreshTokenKey);
@@ -53,12 +63,18 @@ export class AuthService {
     this.isLogged$.next(false);
   }
 
-  // Получить id пользователя
+
+  /**
+   * Получает id пользователя из local storage
+   */
   get userId(): string | null {
     return localStorage.getItem(this.userIdKey);
   }
 
-  // Установить инфо о пользователе
+  /**
+   * Устанавливает id пользователя в local storage
+   * @param id
+   */
   set userId(id: string | null) {
     if (id) {
       localStorage.setItem(this.userIdKey, id);
@@ -67,11 +83,16 @@ export class AuthService {
     }
   }
 
-  // Получить инфо о пользователе с сервера
+  /**
+   * Получает инфо пользователя с сервера
+   */
   getUserInfoFromServer(): Observable<DefaultResponseType | UserInfoResponseType> {
     return this.http.get<DefaultResponseType | UserInfoResponseType>(environment.api + 'users');
   }
 
+  /**
+   * Получает инфо пользователя из local storage
+   */
   getUserInfoFromLocalStorage(): UserInfoResponseType | null {
     const userInfo: string | null = localStorage.getItem(this.userInfo);
     if (userInfo) {
@@ -80,16 +101,27 @@ export class AuthService {
     return null;
   }
 
+  /**
+   * Устанавливает инфо пользователя из local storage
+   * @param info данные пользователя
+   */
   setUserInfoToLocalStorage(info: UserInfoResponseType): void {
     localStorage.setItem(this.userInfo, JSON.stringify(info));
   }
 
+  /**
+   * Удаляет инфо пользователя в local storage
+   */
   removeUserInfoOnLocalStorage(): void {
     localStorage.removeItem(this.userInfo);
   }
 
-
-  // Зарегистрироваться
+  /**
+   * Отправляет запрос на регистрацию пользователя
+   * @param name имя пользователя
+   * @param email email пользователя
+   * @param password пароль пользователя
+   */
   signup(name: string, email: string, password: string): Observable<DefaultResponseType | LoginResponseType> {
     return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'signup', {
       name,
@@ -98,7 +130,12 @@ export class AuthService {
     })
   }
 
-  // Авторизоваться
+  /**
+   * Отправляет запрос на авторизацию пользователя
+   * @param email email пользователя
+   * @param password пароль пользователя
+   * @param rememberMe запомнить меня для пользователя
+   */
   login(email: string, password: string, rememberMe: boolean): Observable<DefaultResponseType | LoginResponseType> {
     return this.http.post<DefaultResponseType | LoginResponseType>(environment.api + 'login', {
       email,
@@ -107,7 +144,9 @@ export class AuthService {
     })
   }
 
-  // Выход из системы
+  /**
+   * Отправляет запрос на выход из системы
+   */
   logout(): Observable<DefaultResponseType> {
     const tokens = this.getTokens();
     if (tokens && tokens.refreshToken) {
@@ -118,11 +157,12 @@ export class AuthService {
     throw throwError(() => 'Can not find token');
   }
 
-  // Обновить токены
+  /**
+   * Отправляет запрос на обновление токенов
+   */
   refresh(): Observable<LoginResponseType | DefaultResponseType> {
     const tokens = this.getTokens();
-    if (tokens && tokens.refreshToken
-    ) {
+    if (tokens && tokens.refreshToken) {
       return this.http.post <LoginResponseType | DefaultResponseType>(environment.api + 'refresh', {
         refreshToken: tokens.refreshToken
       })

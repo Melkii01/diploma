@@ -1,10 +1,9 @@
-<!--<p-button (click)="showDialog()" icon="pi pi-external-link" label="Show"></p-button>-->
 <p-dialog [(visible)]="visibleModal" [modal]="true" [style]="{ width: '50vw' }" [draggable]="false" [resizable]="false">
   <div class="modal">
-    <div class="modal-form" *ngIf="visibleBlock" [formGroup]="modal">
+    <form class="modal-form" *ngIf="visibleBlock" [formGroup]="modal">
       <div class="modal-title">{{ title }}</div>
       <div class="modal-input">
-        <input type="text" class="input input-invalid" [attr.disabled]="true" [ngModel]="service"  style="color: #709fdc" placeholder=""
+        <input type="text" class="input input-invalid" [attr.disabled]="true" style="color: #709fdc" placeholder=""
                formControlName="service">
       </div>
       <div class="modal-input">
@@ -16,7 +15,7 @@
                formControlName="phone">
       </div>
       <button class="modal-button button" [disabled]="modal.invalid" (click)="send()">Оставить заявку</button>
-    </div>
+    </form>
 
     <div class="modal-success" *ngIf="!visibleBlock">
       <div class="modal-success-title">Спасибо за вашу заявку!</div>

@@ -6,8 +6,8 @@ import {AppComponent} from './app.component';
 import {SharedModule} from "./shared/shared.module";
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {HTTP_INTERCEPTORS, HttpClientModule} from "@angular/common/http";
-import {MAT_SNACK_BAR_DEFAULT_OPTIONS, MatSnackBarModule} from "@angular/material/snack-bar";
 import {AuthInterceptor} from "./core/auth/auth.interceptor";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
@@ -19,10 +19,9 @@ import {AuthInterceptor} from "./core/auth/auth.interceptor";
     AppRoutingModule,
     BrowserAnimationsModule,
     HttpClientModule,
-    MatSnackBarModule
+    ToastModule,
   ],
   providers: [
-    {provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}},
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent]

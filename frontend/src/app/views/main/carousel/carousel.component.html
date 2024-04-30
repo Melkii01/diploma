@@ -1,55 +1,5 @@
 <section class="carousel">
   <div class="container">
-    <!--  <div class="carousel-item" style="background-image: url(assets/assets/images/carousel/1.png)">-->
-    <!--    <div class="carousel-category">-->
-    <!--      Предложение месяца-->
-    <!--    </div>-->
-
-    <!--    <div class="carousel-title">-->
-    <!--      Продвижение в Instagram для вашего бизнеса <span>-15%</span>!-->
-    <!--    </div>-->
-
-    <!--    <div class="carousel-button">-->
-    <!--      <button class="button">Подробнее</button>-->
-    <!--    </div>-->
-    <!--  </div>-->
-
-    <!--    <div class="carousel-item" style="background-image: url(assets/assets/images/carousel/2.png)">-->
-    <!--      <div class="carousel-category">-->
-    <!--        Акция-->
-    <!--      </div>-->
-
-    <!--      <div class="carousel-title">-->
-    <!--        Нужен грамотный <span>копирайтер </span>?-->
-    <!--      </div>-->
-
-    <!--      <div class="carousel-text">-->
-    <!--        Весь декабрь у нас действует акция на работу копирайтера.-->
-    <!--      </div>-->
-
-    <!--      <div class="carousel-button">-->
-    <!--        <button class="button">Подробнее</button>-->
-    <!--      </div>-->
-    <!--    </div>-->
-
-    <!--  <div class="carousel-item">-->
-    <!--    <div class="carousel-category">-->
-    <!--      Новость дня-->
-    <!--    </div>-->
-
-    <!--    <div class="carousel-title">-->
-    <!--      <span>6 место</span> в ТОП-10 SMM-агенств Москвы!-->
-    <!--    </div>-->
-
-    <!--    <div class="carousel-text">-->
-    <!--      Мы благодарим каждого, кто голосовал за нас!-->
-    <!--    </div>-->
-
-    <!--    <div class="carousel-button">-->
-    <!--      <button class="button">Подробнее</button>-->
-    <!--    </div>-->
-    <!--  </div>-->
-
 
     <p-carousel [value]="blocks" styleClass="custom-carousel" [numVisible]="1" [numScroll]="1" [circular]="true"
                 [autoplayInterval]="4000">
@@ -61,9 +11,7 @@
             {{block.category}}
           </div>
 
-          <div class="carousel-title" [innerHTML]="block.title">
-            <!--            {{block.title}}-->
-          </div>
+          <div class="carousel-title" [innerHTML]="block.title"></div>
 
           <div class="carousel-text">
             {{block.text}}
@@ -76,7 +24,6 @@
 
       </ng-template>
     </p-carousel>
-
 
   </div>
 </section>

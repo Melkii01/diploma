@@ -13,7 +13,9 @@ export class ArticlesService {
   constructor(private http: HttpClient) {
   }
 
-  // Запросить популярные статьи
+  /**
+   * Отправляет запрос для получения популярных статей
+   */
   popularArticles(): Observable<DefaultResponseType | PopularArticlesResponseType[]> {
     return this.http.get<DefaultResponseType | PopularArticlesResponseType[]>(environment.api + 'articles/top')
   }

@@ -1,11 +1,11 @@
-import {Component, OnInit} from '@angular/core';
+import {Component} from '@angular/core';
 
 @Component({
   selector: 'app-carousel',
   templateUrl: './carousel.component.html',
   styleUrls: ['./carousel.component.scss']
 })
-export class CarouselComponent implements OnInit {
+export class CarouselComponent {
   blocks = [
     {
       image: 'assets/assets/images/carousel/1.png',
@@ -25,31 +25,4 @@ export class CarouselComponent implements OnInit {
       text: 'Мы благодарим каждого, кто голосовал за нас!'
     },
   ];
-
-  responsiveOptions;
-
-  constructor() {
-    this.responsiveOptions = [
-      {
-        breakpoint: '1024px',
-        numVisible: 3,
-        numScroll: 3
-      },
-      {
-        breakpoint: '768px',
-        numVisible: 2,
-        numScroll: 2
-      },
-      {
-        breakpoint: '560px',
-        numVisible: 1,
-        numScroll: 1
-      }
-    ];
-  }
-
-  ngOnInit() {
-
-  }
-
 }

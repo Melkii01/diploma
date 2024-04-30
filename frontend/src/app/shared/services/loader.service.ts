@@ -7,16 +7,19 @@ import {Subject} from "rxjs";
 export class LoaderService {
   isShowed$ = new Subject<boolean>();
 
-  constructor() {
-  }
-
+  /**
+   * Устанавливает флаг показать загрузчик
+   */
   show() {
     this.isShowed$.next(true);
   }
 
+  /**
+   * Устанавливает флаг скрыть загрузчик
+   */
   hide() {
     setTimeout(()=>{
       this.isShowed$.next(false);
-    },200);
+    },400);
   }
 }

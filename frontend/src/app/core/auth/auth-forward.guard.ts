@@ -12,11 +12,14 @@ export class AuthForwardGuard implements CanActivate {
               private location: Location) {
   }
 
+  /**
+   * Защищает от попадания в определенные страницы модуля, если пользователь не авторизован
+   */
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-    // Если не заЛогинен, возвращаем обратно
+    // Если не авторизован, возвращаем в предыдущую страницу
     if (this.authService.getIsLoggedIn()) {
       this.location.back();
       return false;

@@ -12,7 +12,13 @@ export class RequestsService {
   constructor(private http: HttpClient) {
   }
 
-  // Отправка данных в модалке
+  /**
+   * Отправка заявку
+   * @param name имя пользователя
+   * @param phone телефон пользователя
+   * @param service тип услуги
+   * @param type тип заявки
+   */
   requests(name: string, phone: string, service: string, type: string = 'order'): Observable<DefaultResponseType> {
     return this.http.post<DefaultResponseType>(environment.api + 'requests', {
       name,

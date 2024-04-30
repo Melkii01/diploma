@@ -1,55 +1,69 @@
-import { Component,  OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {ModalService} from "../../services/modal.service";
 import {RequestsService} from "../../services/requests.service";
 import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
-import {MatSnackBar} from "@angular/material/snack-bar";
+import {Subscription} from "rxjs";
+import {MessageService} from "primeng/api";
 
 @Component({
   selector: 'app-modal',
   templateUrl: './modal.component.html',
   styleUrls: ['./modal.component.scss']
 })
-export class ModalComponent implements OnInit {
+export class ModalComponent implements OnInit, OnDestroy {
+  // Показать/скрыть модальное окно
   visibleModal = false;
+
+  // Показать/скрыть блок формы внутри модального окна
   visibleBlock = true;
   title = '';
-  service = '';
+  private subs: Subscription = new Subscription();
   modal = this.fb.group({
     name: ['', [Validators.required]],
     phone: ['', [Validators.required]],
-    service: [this.service, [Validators.required]],
+    service: ['', [Validators.required]],
   })
-
 
   constructor(private fb: FormBuilder,
               private modalService: ModalService,
               private requestsService: RequestsService,
-              private snackBar: MatSnackBar) {
+              private messageService: MessageService) {
   }
 
   ngOnInit(): void {
-    // Подписываемся на изменения и переписываем переменные
-    this.modalService.isShowed$.subscribe((isShowed: boolean) => {
-      this.visibleModal = isShowed;
-    });
-    this.modalService.title$.subscribe((title: string) => {
-      this.title = title;
-    });
 
-    this.modalService.service$.subscribe((service: string) => {
-      this.service = service;
-    });
+    // Подписываемся на изменения и переписываем переменные
+    this.subs.add(this.modalService.isShowed$.subscribe((isShowed: boolean) => {
+      this.visibleModal = isShowed;
+    }));
+    this.subs.add(this.modalService.title$.subscribe((title: string) => {
+      this.title = title;
+    }));
+    this.subs.add(this.modalService.service$.subscribe((service: string) => {
+      this.modal.get('service')?.patchValue(service);
+    }));
   }
 
-  // Закрыть модалку, также переключить на форму
+  /**
+   *  Отписывает от всех подписок
+   */
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
+  }
+
+  /**
+   * Закрывает модальное окно, также переключается на блок формы
+   */
   closeModal() {
     this.modalService.hide();
     this.visibleBlock = true;
   }
 
-  // Отправка формы
+  /**
+   *  Отправляет заявку на оформление заказа
+   */
   send() {
     if (this.modal.valid && this.modal.value.name && this.modal.value.phone && this.modal.value.service) {
       this.requestsService.requests(this.modal.value.name, this.modal.value.phone,
@@ -58,31 +72,33 @@ export class ModalComponent implements OnInit {
           next: (data: DefaultResponseType) => {
             let error = null;
 
-            // Если ошибка есть
+            // Если ошибка есть, записываем в переменную error
             if (data.error) {
               error = (data as DefaultResponseType).message;
             }
+
+            // Если есть ошибка выводим ошибку и останавливаем функцию
             if (error) {
-              this.snackBar.open(error);
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
               throw new Error(error);
             }
 
-            // Переключаемся на успешный блок, а также через время возвращаем обратно
+            // Переключаемся на успешный блок, а также через время возвращаем обратно в блок заполнения формы
             this.visibleBlock = false;
             setTimeout(() => {
               this.visibleBlock = true;
-
             }, 7000);
           },
           error: (errorResponse: HttpErrorResponse) => {
             if (errorResponse.error && errorResponse.message) {
-              this.snackBar.open(errorResponse.error.message);
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
+              throw new Error(errorResponse.error.message);
             } else {
-              this.snackBar.open('Ошибка отправки');
+              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка отправки'});
+              throw new Error(errorResponse.error.message);
             }
           }
         });
     }
   }
-
 }
