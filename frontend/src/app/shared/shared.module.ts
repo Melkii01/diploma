@@ -15,6 +15,7 @@ import {ButtonModule} from "primeng/button";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {MenuModule} from 'primeng/menu';
+import {TextLengthPipe, TitleLengthPipe} from './pipes/text-length.pipe';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,8 @@ import {MenuModule} from 'primeng/menu';
     LoaderComponent,
     ContactsComponent,
     ModalComponent,
+    TextLengthPipe,
+    TitleLengthPipe
   ],
   imports: [
     CommonModule,
@@ -46,7 +49,9 @@ import {MenuModule} from 'primeng/menu';
     ReviewsComponent,
     LoaderComponent,
     ContactsComponent,
-    ModalComponent
+    ModalComponent,
+    TextLengthPipe,
+    TitleLengthPipe
   ]
 })
 export class SharedModule {

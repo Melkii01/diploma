@@ -33,15 +33,14 @@ export class ModalComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-
     // Подписываемся на изменения и переписываем переменные
-    this.subs.add(this.modalService.isShowed$.subscribe((isShowed: boolean) => {
+    this.subs.add(this.modalService.isShowed$.subscribe((isShowed: boolean): void => {
       this.visibleModal = isShowed;
     }));
-    this.subs.add(this.modalService.title$.subscribe((title: string) => {
+    this.subs.add(this.modalService.title$.subscribe((title: string): void => {
       this.title = title;
     }));
-    this.subs.add(this.modalService.service$.subscribe((service: string) => {
+    this.subs.add(this.modalService.service$.subscribe((service: string): void => {
       this.modal.get('service')?.patchValue(service);
     }));
   }
@@ -69,7 +68,7 @@ export class ModalComponent implements OnInit, OnDestroy {
       this.requestsService.requests(this.modal.value.name, this.modal.value.phone,
         this.modal.value.service)
         .subscribe({
-          next: (data: DefaultResponseType) => {
+          next: (data: DefaultResponseType): void => {
             let error = null;
 
             // Если ошибка есть, записываем в переменную error
@@ -85,11 +84,13 @@ export class ModalComponent implements OnInit, OnDestroy {
 
             // Переключаемся на успешный блок, а также через время возвращаем обратно в блок заполнения формы
             this.visibleBlock = false;
-            setTimeout(() => {
-              this.visibleBlock = true;
+            setTimeout((): void => {
+              if (!this.visibleBlock) {
+                this.visibleBlock = true;
+              }
             }, 7000);
           },
-          error: (errorResponse: HttpErrorResponse) => {
+          error: (errorResponse: HttpErrorResponse): void => {
             if (errorResponse.error && errorResponse.message) {
               this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
               throw new Error(errorResponse.error.message);

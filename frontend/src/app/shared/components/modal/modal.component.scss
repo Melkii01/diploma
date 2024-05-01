@@ -6,6 +6,10 @@
   border-radius: 10px;
   width: 727px;
   height: 489px;
+
+  .p-dialog-header {
+    padding: 20px 30px;
+  }
 }
 
 
@@ -17,7 +21,7 @@
 
     .modal-title {
       @include head-title;
-      margin-bottom: 20px;
+      margin-bottom: 18px;
     }
 
     .modal-input {
@@ -53,7 +57,7 @@
       color: #1e1a2b;
     }
 
-    button.button{
+    button.button {
       padding: 10px 20px;
       font-size: 12px;
     }

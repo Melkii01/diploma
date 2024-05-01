@@ -1,4 +1,4 @@
-export type PopularArticlesResponseType = {
+export type ArticlesResponseType = {
   id: string,
   title: string,
   description: string,

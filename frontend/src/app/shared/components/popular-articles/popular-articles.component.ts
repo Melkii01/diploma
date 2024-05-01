@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {PopularArticlesResponseType} from "../../types/popular-articles-response.type";
+import {ArticlesResponseType} from "../../types/articles-response.type";
 import {ArticlesService} from "../../services/articles.service";
 import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -11,18 +11,17 @@ import {MessageService} from "primeng/api";
   styleUrls: ['./popular-articles.component.scss']
 })
 export class PopularArticlesComponent implements OnInit {
-  popularArticles: PopularArticlesResponseType[] = [];
+  popularArticles: ArticlesResponseType[] = [];
 
   constructor(private articleService: ArticlesService,
-
               private messageService: MessageService) {
   }
 
   ngOnInit(): void {
     // Получает данные популярных статей
-    this.articleService.popularArticles()
+    this.articleService.getPopularArticles()
       .subscribe({
-        next: (data: DefaultResponseType | PopularArticlesResponseType[]) => {
+        next: (data: DefaultResponseType | ArticlesResponseType[]) => {
           let error = null;
 
           // Если есть ошибка записываем в переменную error
@@ -36,15 +35,23 @@ export class PopularArticlesComponent implements OnInit {
             throw new Error(error);
           }
 
+          // Добавляем в каждом статье в адрес url
+          data = data as ArticlesResponseType[];
+          data.map(item => item.url = '/articles/' + item.url);
+
           // Записываем данные в переменную
-          this.popularArticles = data as PopularArticlesResponseType[];
+          this.popularArticles = data;
         },
         error: (errorResponse: HttpErrorResponse) => {
           if (errorResponse.error && errorResponse.message) {
             this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
             throw new Error(errorResponse.error.message);
           } else {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка получения популярных статей'});
+            this.messageService.add({
+              severity: 'error',
+              summary: 'Ошибка',
+              detail: 'Ошибка получения популярных статей'
+            });
             throw new Error(errorResponse.error.message);
           }
         }

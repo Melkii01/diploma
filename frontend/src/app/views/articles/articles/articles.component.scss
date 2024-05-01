@@ -46,22 +46,102 @@
         }
       }
 
+
       .articles-sorting {
-        a {
+        width: 257px;
+        min-width: 257px;
+        box-sizing: border-box;
+        position: relative;
+        font-size: 16px;
+        cursor: pointer;
+
+        .articles-sorting-head {
           display: flex;
           align-items: center;
-          text-decoration: none;
-          font-size: 16px;
+          padding: 12px 0 12px 23px;
+          justify-content: space-between;
           color: $blue-color;
-          @include hover-color-light-blue;
 
-          &:hover svg path {
-            fill: $light-blue-color;
+          span {
+            margin-right: 8px;
+            color: $blue-color;
           }
 
-          svg {
-            margin-left: 65px;
-            margin-top: 2px;
+          &:hover {
+
+            span {
+              color: $light-blue-color;
+            }
+
+            svg path {
+              fill: $light-blue-color;
+            }
+          }
+        }
+
+        .articles-sorting-body {
+          position: absolute;
+          width: 100%;
+          box-sizing: border-box;
+          z-index: 3;
+          display: none;
+          padding: 12px 23px;
+          border-radius: 0 0 5px 5px;
+          background: white;
+          color: #bebebe;
+          border-left: 2px solid #b9d5fd;
+          border-right: 2px solid #b9d5fd;
+          border-bottom: 2px solid #b9d5fd;
+
+          .articles-sorting-item {
+            margin-bottom: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+
+            span {
+              font-size: 16px;
+            }
+
+            &:last-child {
+              margin-bottom: 0;
+            }
+
+            &.active {
+              color: #313131;
+
+              svg path {
+                fill: #313131;
+              }
+            }
+
+            &:hover {
+              color: $light-blue-color;
+
+              svg path {
+                fill: $light-blue-color;
+              }
+            }
+          }
+        }
+
+        &.open {
+          width: 257px;
+          min-width: 257px;
+
+          .articles-sorting-head {
+            background: #b9d5fd;
+            border-radius: 5px 5px 0 0;
+            padding-right: 23px;
+
+            svg {
+              transform: rotate(180deg);
+            }
+          }
+
+          .articles-sorting-body {
+            display: block;
           }
         }
       }
@@ -73,7 +153,6 @@
       gap: 40px 24px;
       margin-bottom: 60px;
     }
-
 
     .pagination {
       display: flex;
@@ -116,8 +195,9 @@
           &:first-child {
             margin-left: 40px;
           }
+
           &:last-child {
-            margin-right:40px;
+            margin-right: 40px;
           }
         }
       }
