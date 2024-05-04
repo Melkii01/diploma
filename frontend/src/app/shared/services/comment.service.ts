@@ -61,12 +61,12 @@ export class CommentService {
     });
   }
 
-  /**
-   * Отправка запроса на получение реакции авторизованного пользователя для определенного комментария
-   * @param id идентификатор комментария
-   */
-  getCommentAction(id: string): Observable<CommentActionsType[] | DefaultResponseType> {
-    return this.http.get<CommentActionsType[] | DefaultResponseType>(environment.api + 'comments/' + id + '/actions');
-  }
+  // /**
+  //  * Отправка запроса на получение реакции авторизованного пользователя для определенного комментария
+  //  * @param id идентификатор комментария
+  //  */
+  // getCommentAction(id: string): Observable<CommentActionsType[] | DefaultResponseType> {
+  //   return this.http.get<CommentActionsType[] | DefaultResponseType>(environment.api + 'comments/' + id + '/actions');
+  // }
 
 }

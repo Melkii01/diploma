@@ -3,7 +3,9 @@
     <form class="modal-form" *ngIf="visibleBlock" [formGroup]="modal">
       <div class="modal-title">{{ title }}</div>
       <div class="modal-input">
-        <input type="text" class="input input-invalid" [attr.disabled]="true" style="color: #709fdc" placeholder=""
+        <input type="text" class="input input-invalid"
+               *ngIf="type === 'order'"
+               [attr.disabled]="true" style="color: #709fdc" placeholder=""
                formControlName="service">
       </div>
       <div class="modal-input">
@@ -14,7 +16,7 @@
         <input type="text" class="input input-invalid" placeholder="Ваш номер телефона"
                formControlName="phone">
       </div>
-      <button class="modal-button button" [disabled]="modal.invalid" (click)="send()">Оставить заявку</button>
+      <button class="modal-button button" [disabled]="modal.invalid" (click)="send()">{{ buttonText }}</button>
     </form>
 
     <div class="modal-success" *ngIf="!visibleBlock">

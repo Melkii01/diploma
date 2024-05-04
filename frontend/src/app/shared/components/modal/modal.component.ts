@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, Input, OnDestroy, OnInit} from '@angular/core';
 import {FormBuilder, Validators} from "@angular/forms";
 import {ModalService} from "../../services/modal.service";
 import {RequestsService} from "../../services/requests.service";
@@ -13,17 +13,22 @@ import {MessageService} from "primeng/api";
   styleUrls: ['./modal.component.scss']
 })
 export class ModalComponent implements OnInit, OnDestroy {
+
   // Показать/скрыть модальное окно
-  visibleModal = false;
+  visibleModal: boolean = false;
 
   // Показать/скрыть блок формы внутри модального окна
-  visibleBlock = true;
-  title = '';
+  visibleBlock: boolean = true;
+  title: string = '';
+  type: string = '';
+  service: string = '';
+  buttonText: string = '';
+
   private subs: Subscription = new Subscription();
   modal = this.fb.group({
+    service: [''],
     name: ['', [Validators.required]],
-    phone: ['', [Validators.required]],
-    service: ['', [Validators.required]],
+    phone: ['', [Validators.required, Validators.pattern(/^((8|\+7)[\- ]?)?(\(?\d{3}\)?[\- ]?)?[\d\- ]{7,10}$/)]],
   })
 
   constructor(private fb: FormBuilder,
@@ -37,11 +42,13 @@ export class ModalComponent implements OnInit, OnDestroy {
     this.subs.add(this.modalService.isShowed$.subscribe((isShowed: boolean): void => {
       this.visibleModal = isShowed;
     }));
-    this.subs.add(this.modalService.title$.subscribe((title: string): void => {
-      this.title = title;
-    }));
-    this.subs.add(this.modalService.service$.subscribe((service: string): void => {
-      this.modal.get('service')?.patchValue(service);
+
+    this.subs.add(this.modalService.modalData$.subscribe((data: { type: string, service: string, title: string, buttonText: string }): void => {
+      this.modal.get('service')?.patchValue(data.service);
+      this.type = data.type;
+      this.service = data.service;
+      this.title = data.title;
+      this.buttonText = data.buttonText;
     }));
   }
 
@@ -58,15 +65,21 @@ export class ModalComponent implements OnInit, OnDestroy {
   closeModal() {
     this.modalService.hide();
     this.visibleBlock = true;
+
+    // Обнуляем форму, записываем в инпут услугу
+    this.modal.reset();
+    this.modal.get('service')?.patchValue(this.service);
+
   }
 
   /**
    *  Отправляет заявку на оформление заказа
    */
-  send() {
+  send(): void {
     if (this.modal.valid && this.modal.value.name && this.modal.value.phone && this.modal.value.service) {
+
       this.requestsService.requests(this.modal.value.name, this.modal.value.phone,
-        this.modal.value.service)
+        this.type, this.modal.value.service)
         .subscribe({
           next: (data: DefaultResponseType): void => {
             let error = null;
@@ -82,8 +95,12 @@ export class ModalComponent implements OnInit, OnDestroy {
               throw new Error(error);
             }
 
-            // Переключаемся на успешный блок, а также через время возвращаем обратно в блок заполнения формы
+            // Переключаемся на успешный блок, обнуляем форму, записываем в инпут услугу
             this.visibleBlock = false;
+            this.modal.reset();
+            this.modal.get('service')?.patchValue(this.service);
+
+            // Через время возвращаем обратно блок заполнения формы
             setTimeout((): void => {
               if (!this.visibleBlock) {
                 this.visibleBlock = true;

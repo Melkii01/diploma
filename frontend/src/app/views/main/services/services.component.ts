@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, Input} from '@angular/core';
 import {ModalService} from "../../../shared/services/modal.service";
 
 @Component({
@@ -12,10 +12,10 @@ export class ServicesComponent {
   }
 
   /**
-   * Открыть модальное окно с параметром
+   * Открыть модальное окно с параметрами
    * @param value тип услуг
    */
   openModal(value: string) {
-    this.modalService.show('Заявка на услугу', value);
+    this.modalService.show('order', value, 'Заявка на услугу', 'Оставить заявку');
   }
 }

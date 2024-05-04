@@ -6,18 +6,18 @@ import {Subject} from "rxjs";
 })
 export class ModalService {
   isShowed$ = new Subject<boolean>();
-  title$ = new Subject<string>();
-  service$ = new Subject<string>();
+  modalData$ = new Subject<{ type: string, service: string, title: string, buttonText: string }>();
 
   /**
    * Устанавливает флаг показать модальное окно, также устанавливает
-   * @param title оглавление формы
-   * @param service тип услуги
+   * @param service название услуги
+   * @param type тип обращения
+   * @param title оглавление модуля
+   * @param buttonText текст на кнопке
    */
-  show(title: string, service: string = '') {
+  show(type: string, service: string,title: string, buttonText: string): void {
     this.isShowed$.next(true);
-    this.title$.next(title);
-    this.service$.next(service);
+    this.modalData$.next({type, service, title, buttonText});
   }
 
   /**
