@@ -1,0 +1,91 @@
+@import "variables";
+@import "mixins";
+
+.comment-item {
+  margin-bottom: 40px;
+
+  .comment-item-user {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+
+    .comment-item-user-image {
+      background-color: #B9D5FD;
+      border: 2px solid $light-blue-color;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      width: 60px;
+      height: 60px;
+      margin-right: 20px;
+    }
+
+    .comment-item-user-block {
+      .comment-item-user-name {
+        font-weight: 600;
+        font-size: 18px;
+        color: $light-blue-color;
+        margin-bottom: 10px;
+      }
+
+      .comment-item-user-date {
+        font-family: $font-family;
+        font-weight: 600;
+        font-size: 14px;
+        line-height: 130%;
+        color: #bebebe;
+      }
+    }
+  }
+
+  .comment-item-user-comment {
+    font-size: 14px;
+    line-height: 140%;
+    color: $blue-color;
+    margin-bottom: 40px;
+  }
+
+  .comment-item-user-actions {
+    display: flex;
+    align-items: center;
+
+
+    a {
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      margin-right: 15px;
+      color: $blue-color;
+      cursor: pointer;
+
+      &:last-child {
+        margin-right: 0;
+      }
+
+      span {
+        margin-right: 3px;
+        font-weight: 600;
+        font-size: 14px;
+      }
+
+
+      &:hover {
+        color: $light-blue-color;
+      }
+
+      &:hover svg path {
+        stroke: $light-blue-color;
+      }
+
+    }
+
+    a.active {
+      color: $light-blue-color;
+
+      svg path {
+        stroke: $light-blue-color;
+      }
+    }
+  }
+}

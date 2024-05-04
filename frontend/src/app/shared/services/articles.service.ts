@@ -3,8 +3,9 @@ import {Observable} from "rxjs";
 import {DefaultResponseType} from "../types/default-response.type";
 import {environment} from "../../../environments/environment";
 import {HttpClient} from "@angular/common/http";
-import {ArticlesResponseType} from "../types/articles-response.type";
-import {ActiveParamsType} from "../types/active-params.type";
+import {ArticleRelatedResponseType} from "../types/article-related-response.type";
+import {ArticlesActiveParamsType} from "../types/articles-active-params.type";
+import {ArticleResponseType} from "../types/article-response.type";
 
 @Injectable({
   providedIn: 'root'
@@ -17,17 +18,33 @@ export class ArticlesService {
   /**
    * Отправляет запрос для получения популярных статей
    */
-  getPopularArticles(): Observable<DefaultResponseType | ArticlesResponseType[]> {
-    return this.http.get<DefaultResponseType | ArticlesResponseType[]>(environment.api + 'articles/top')
+  getPopularArticles(): Observable<DefaultResponseType | ArticleRelatedResponseType[]> {
+    return this.http.get<DefaultResponseType | ArticleRelatedResponseType[]>(environment.api + 'articles/top');
   }
 
   /**
    * Отправляет запрос для получения статей с заданными параметрами
    * @param params параметры запросы
    */
-  getArticles(params: ActiveParamsType): Observable<{ totalCount: number, pages: number, items: ArticlesResponseType[] }> {
-    return this.http.get<{ totalCount: number, pages: number, items: ArticlesResponseType[] }>(environment.api + 'articles', {
+  getArticles(params: ArticlesActiveParamsType): Observable<{ totalCount: number, pages: number, items: ArticleRelatedResponseType[] }> {
+    return this.http.get<{ totalCount: number, pages: number, items: ArticleRelatedResponseType[] }>(environment.api + 'articles', {
       params: params
     });
+  }
+
+  /**
+   * Отправляет запрос для получения статьи
+   * @param url адрес статьи
+   */
+  getArticle(url: string): Observable<DefaultResponseType | ArticleResponseType> {
+    return this.http.get<DefaultResponseType | ArticleResponseType>(environment.api + 'articles/' + url);
+  }
+
+  /**
+   * Отправляет запрос для получения связанных статей
+   * @param url адрес статьи
+   */
+  getRelatedArticle(url: string): Observable<DefaultResponseType | ArticleRelatedResponseType[]> {
+    return this.http.get<DefaultResponseType | ArticleRelatedResponseType[]>(environment.api + 'articles/related/' + url);
   }
 }

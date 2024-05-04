@@ -1,13 +1,17 @@
 import {Component, OnInit} from '@angular/core';
 import {ArticlesService} from "../../../shared/services/articles.service";
-import {ArticlesResponseType} from "../../../shared/types/articles-response.type";
-import {ActiveParamsType} from "../../../shared/types/active-params.type";
+import {ArticleRelatedResponseType} from "../../../shared/types/article-related-response.type";
+import {ArticlesActiveParamsType} from "../../../shared/types/articles-active-params.type";
 import {CategoryService} from "../../../shared/services/category.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {debounceTime} from "rxjs";
 import {ActiveParamsUtil} from "../../../shared/utils/active-params.utils";
 import {AppliedFilterType} from "../../../shared/types/applied-filter.type";
-import {CategoryType} from "../../../shared/types/category.type";
+import {CategoryResponseType} from "../../../shared/types/category-response.type";
+import {DefaultResponseType} from "../../../shared/types/default-response.type";
+import {ArticleResponseType} from "../../../shared/types/article-response.type";
+import {MessageService} from "primeng/api";
+import {ArticlesResponseType} from "../../../shared/types/articles-response.type";
 
 @Component({
   selector: 'app-articles',
@@ -15,9 +19,9 @@ import {CategoryType} from "../../../shared/types/category.type";
   styleUrls: ['./articles.component.scss']
 })
 export class ArticlesComponent implements OnInit {
-  articles: ArticlesResponseType[] = [];
-  categories: CategoryType[] = [];
-  activeParams: ActiveParamsType = {categories: []};
+  articles: ArticleRelatedResponseType[] = [];
+  categories: CategoryResponseType[] = [];
+  activeParams: ArticlesActiveParamsType = {categories: []};
   appliedFilters: AppliedFilterType[] = [];
   sortingOpen = false;
   pages: number[] = [];
@@ -25,14 +29,14 @@ export class ArticlesComponent implements OnInit {
   constructor(private articleService: ArticlesService,
               private categoryService: CategoryService,
               private activatedRoute: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+              private messageService: MessageService) {
   }
 
-  // Запрашиваем каталог
   ngOnInit(): void {
     // Зарос на список категорий
     this.categoryService.getCategories()
-      .subscribe((data: CategoryType[]): void => {
+      .subscribe((data: CategoryResponseType[]): void => {
         this.categories = data;
 
         // Ищем параметры фильтров в url
@@ -50,7 +54,7 @@ export class ArticlesComponent implements OnInit {
 
             // Находим фильтра из url параметра
             this.activeParams.categories.forEach(url => {
-              const foundType = this.categories.find((category: CategoryType): boolean => category.url === url);
+              const foundType = this.categories.find((category: CategoryResponseType): boolean => category.url === url);
 
               // Если нашли записываем в переменную примененных фильтров
               if (foundType) {
@@ -63,15 +67,32 @@ export class ArticlesComponent implements OnInit {
 
             // Запрос на список статей
             this.articleService.getArticles(this.activeParams)
-              .subscribe((data: { totalCount: number; pages: number; items: ArticlesResponseType[] }): void => {
-                this.pages = [];
-                for (let i = 1; i <= data.pages; i++) {
-                  this.pages.push(i);
+              .subscribe({
+                next: (data: ArticlesResponseType | DefaultResponseType): void => {
+                  let error = null;
+
+                  // Если есть ошибка записываем в переменную error
+                  if ((data as DefaultResponseType).error !== undefined) {
+                    error = (data as DefaultResponseType).message;
+                  }
+
+                  // Если есть ошибка выводим ошибку и останавливаем функцию
+                  if (error) {
+                    this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
+                    throw new Error(error);
+                  }
+
+                  // Записываем массив страниц и данные
+                  data = data as ArticlesResponseType;
+                  this.pages = [];
+                  for (let i = 1; i <= data.pages; i++) {
+                    this.pages.push(i);
+                  }
+                  this.articles = data.items;
                 }
-                this.articles = data.items;
               });
           })
-      });
+      })
   }
 
   /**

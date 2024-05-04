@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import {HttpClient} from "@angular/common/http";
 import {Observable} from "rxjs";
-import {CategoryType} from "../types/category.type";
+import {CategoryResponseType} from "../types/category-response.type";
 import {environment} from "../../../environments/environment";
 
 @Injectable({
@@ -14,7 +14,7 @@ export class CategoryService {
   /**
    * Отправляет запрос на получение категорий статей
    */
-  getCategories(): Observable<CategoryType[]> {
-    return this.http.get<CategoryType[]>(environment.api + 'categories');
+  getCategories(): Observable<CategoryResponseType[]> {
+    return this.http.get<CategoryResponseType[]>(environment.api + 'categories');
   }
 }

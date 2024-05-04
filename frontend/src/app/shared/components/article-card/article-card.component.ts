@@ -1,5 +1,5 @@
 import {Component, Input} from '@angular/core';
-import {ArticlesResponseType} from "../../types/articles-response.type";
+import {ArticleRelatedResponseType} from "../../types/article-related-response.type";
 
 @Component({
   selector: 'app-article-card',
@@ -7,5 +7,5 @@ import {ArticlesResponseType} from "../../types/articles-response.type";
   styleUrls: ['./article-card.component.scss']
 })
 export class ArticleCardComponent {
-  @Input() article!: ArticlesResponseType;
+  @Input() article!: ArticleRelatedResponseType;
   }

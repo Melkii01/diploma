@@ -1,5 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {ArticlesResponseType} from "../../types/articles-response.type";
+import {ArticleRelatedResponseType} from "../../types/article-related-response.type";
 import {ArticlesService} from "../../services/articles.service";
 import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -11,7 +11,7 @@ import {MessageService} from "primeng/api";
   styleUrls: ['./popular-articles.component.scss']
 })
 export class PopularArticlesComponent implements OnInit {
-  popularArticles: ArticlesResponseType[] = [];
+  popularArticles: ArticleRelatedResponseType[] = [];
 
   constructor(private articleService: ArticlesService,
               private messageService: MessageService) {
@@ -21,7 +21,7 @@ export class PopularArticlesComponent implements OnInit {
     // Получает данные популярных статей
     this.articleService.getPopularArticles()
       .subscribe({
-        next: (data: DefaultResponseType | ArticlesResponseType[]) => {
+        next: (data: DefaultResponseType | ArticleRelatedResponseType[]) => {
           let error = null;
 
           // Если есть ошибка записываем в переменную error
@@ -35,12 +35,8 @@ export class PopularArticlesComponent implements OnInit {
             throw new Error(error);
           }
 
-          // Добавляем в каждом статье в адрес url
-          data = data as ArticlesResponseType[];
-          data.map(item => item.url = '/articles/' + item.url);
-
           // Записываем данные в переменную
-          this.popularArticles = data;
+          this.popularArticles = data as ArticleRelatedResponseType[];
         },
         error: (errorResponse: HttpErrorResponse) => {
           if (errorResponse.error && errorResponse.message) {
@@ -55,6 +51,6 @@ export class PopularArticlesComponent implements OnInit {
             throw new Error(errorResponse.error.message);
           }
         }
-      })
+      });
   }
 }

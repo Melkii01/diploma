@@ -1,4 +1,4 @@
-export type ActiveParamsType = {
+export type ArticlesActiveParamsType = {
   categories: string[],
   page?: number
 }

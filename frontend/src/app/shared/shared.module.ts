@@ -16,6 +16,7 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {MenuModule} from 'primeng/menu';
 import {TextLengthPipe, TitleLengthPipe} from './pipes/text-length.pipe';
+import { ArticleCommentComponent } from './components/article-comment/article-comment.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import {TextLengthPipe, TitleLengthPipe} from './pipes/text-length.pipe';
     ContactsComponent,
     ModalComponent,
     TextLengthPipe,
-    TitleLengthPipe
+    TitleLengthPipe,
+    ArticleCommentComponent
   ],
   imports: [
     CommonModule,
@@ -40,19 +42,20 @@ import {TextLengthPipe, TitleLengthPipe} from './pipes/text-length.pipe';
     ProgressSpinnerModule,
     MenuModule,
   ],
-  exports: [
-    LayoutComponent,
-    FooterComponent,
-    HeaderComponent,
-    PopularArticlesComponent,
-    ArticleCardComponent,
-    ReviewsComponent,
-    LoaderComponent,
-    ContactsComponent,
-    ModalComponent,
-    TextLengthPipe,
-    TitleLengthPipe
-  ]
+    exports: [
+        LayoutComponent,
+        FooterComponent,
+        HeaderComponent,
+        PopularArticlesComponent,
+        ArticleCardComponent,
+        ReviewsComponent,
+        LoaderComponent,
+        ContactsComponent,
+        ModalComponent,
+        TextLengthPipe,
+        TitleLengthPipe,
+        ArticleCommentComponent
+    ]
 })
 export class SharedModule {
 }

@@ -1,9 +1,7 @@
+import {ArticleRelatedResponseType} from "./article-related-response.type";
+
 export type ArticlesResponseType = {
-  id: string,
-  title: string,
-  description: string,
-  image: string,
-  date: string,
-  category: string,
-  url: string
+  totalCount: number;
+  pages: number;
+  items: ArticleRelatedResponseType[]
 }

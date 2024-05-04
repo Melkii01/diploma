@@ -11,7 +11,7 @@
       font-size: 16px;
       color: #b9d5fd;
 
-      a {
+      span {
         text-decoration: none;
         font-weight: 500;
         color: $light-blue-color;
@@ -55,29 +55,45 @@
       .article-body-content {
         max-width: 818px;
 
-        .article-body-content-title {
-          @include card-title;
-          padding-top: 20px;
-          padding-bottom: 20px;
-        }
+        ::ng-deep .article-body-content-text {
+          h1 {
+            @include card-title;
+            font-size: 28px;
+          }
 
-        .article-body-content-block {
-          margin-bottom: 20px;
-          font-family: $font-family;
-          font-size: 14px;
-          line-height: 130%;
-          color: $blue-color;
+          h3 {
+            @include card-title;
+          }
 
-          span {
-            font-weight: 500;
+          p {
+            font-family: $font-family;
+            font-size: 14px;
+            line-height: 130%;
+            color: $blue-color;
+
+            b {
+              font-weight: 600;
+            }
           }
 
           ol {
             padding-left: 17px;
+            li{
+              font-family: $font-family;
+              font-size: 14px;
+              line-height: 130%;
+              color: $blue-color;
+            }
           }
 
           ul {
             padding-left: 17px;
+            li{
+              font-family: $font-family;
+              font-size: 14px;
+              line-height: 130%;
+              color: $blue-color;
+            }
           }
         }
 
@@ -138,97 +154,26 @@
                 width: 422px;
               }
             }
+
+            .comment-form-auth {
+              margin-top: 20px;
+              font-size: 14px;
+              color: $blue-color;
+
+              a {
+                color: $light-blue-color;
+                text-decoration: none;
+              }
+            }
           }
 
           .comment-items {
             margin-top: 60px;
-
-            .comment-item {
-              margin-bottom: 40px;
-
-              &:last-child {
-                margin-bottom: 0;
-              }
-
-              .comment-item-user {
-                display: flex;
-                align-items: center;
-                margin-bottom: 15px;
-
-                .comment-item-user-image {
-                  background-color: #B9D5FD;
-                  border: 2px solid $light-blue-color;
-                  border-radius: 50%;
-                  background-size: cover;
-                  background-position: center;
-                  background-repeat: no-repeat;
-                  width: 60px;
-                  height: 60px;
-                  margin-right: 20px;
-                }
-
-                .comment-item-user-block {
-                  .comment-item-user-name {
-                    font-weight: 600;
-                    font-size: 18px;
-                    color: $light-blue-color;
-                    margin-bottom: 10px;
-                  }
-
-                  .comment-item-user-date {
-                    font-family: $font-family;
-                    font-weight: 600;
-                    font-size: 14px;
-                    line-height: 130%;
-                    color: #bebebe;
-                  }
-                }
-              }
-
-              .comment-item-user-comment {
-                font-size: 14px;
-                line-height: 140%;
-                color: $blue-color;
-                margin-bottom: 40px;
-              }
-
-              .comment-item-user-actions {
-                display: flex;
-                align-items: center;
-
-                a {
-                  text-decoration: none;
-                  display: flex;
-                  align-items: center;
-                  margin-right: 15px;
-                  color: $blue-color;
-
-                  &:last-child {
-                    margin-right: 0;
-                  }
-
-                  span {
-                    margin-right: 3px;
-                    font-weight: 600;
-                    font-size: 14px;
-                  }
-
-
-                  &:hover {
-                    color: $light-blue-color;
-                  }
-
-                  &:hover svg path {
-                    stroke: $light-blue-color;
-                  }
-                }
-              }
-            }
-
           }
 
           .comment-more {
-            margin-top: 60px;
+            padding-top: 20px;
+            display: flex;
 
             a {
               font-weight: 500;
@@ -237,6 +182,7 @@
               display: flex;
               align-items: center;
               text-decoration: none;
+              cursor: pointer;
 
               &:hover {
                 color: $blue-color;

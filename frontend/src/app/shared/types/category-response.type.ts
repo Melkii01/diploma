@@ -1,4 +1,4 @@
-export type CategoryType = {
+export type CategoryResponseType = {
   id: string,
   name: string,
   url: string
