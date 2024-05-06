@@ -15,8 +15,10 @@ import {ButtonModule} from "primeng/button";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ProgressSpinnerModule} from "primeng/progressspinner";
 import {MenuModule} from 'primeng/menu';
-import {TextLengthPipe, TitleLengthPipe} from './pipes/text-length.pipe';
+import {TextLengthPipe} from './pipes/text-length.pipe';
 import { ArticleCommentComponent } from './components/article-comment/article-comment.component';
+import {MessageService} from "primeng/api";
+import {ToastModule} from "primeng/toast";
 
 @NgModule({
   declarations: [
@@ -30,7 +32,6 @@ import { ArticleCommentComponent } from './components/article-comment/article-co
     ContactsComponent,
     ModalComponent,
     TextLengthPipe,
-    TitleLengthPipe,
     ArticleCommentComponent
   ],
   imports: [
@@ -41,6 +42,7 @@ import { ArticleCommentComponent } from './components/article-comment/article-co
     ReactiveFormsModule,
     ProgressSpinnerModule,
     MenuModule,
+    ToastModule
   ],
     exports: [
         LayoutComponent,
@@ -53,9 +55,8 @@ import { ArticleCommentComponent } from './components/article-comment/article-co
         ContactsComponent,
         ModalComponent,
         TextLengthPipe,
-        TitleLengthPipe,
         ArticleCommentComponent
-    ]
+    ],
 })
 export class SharedModule {
 }

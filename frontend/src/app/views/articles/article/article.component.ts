@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {debounceTime} from "rxjs";
 import {ArticlesService} from "../../../shared/services/articles.service";
@@ -14,13 +14,14 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {CommentType} from "../../../shared/types/comment.type";
 import {CommentActionsType} from "../../../shared/types/comment-actions.type";
 import {CommentActionEnum} from "../../../shared/types/comment-action.enum";
+import {ErrorResponseService} from "../../../shared/services/error-response.service";
 
 @Component({
   selector: 'app-article',
   templateUrl: './article.component.html',
   styleUrls: ['./article.component.scss']
 })
-export class ArticleComponent implements OnInit {
+export class ArticleComponent implements OnInit, OnDestroy {
   url: string = '';
   isLogged: boolean = false;
   relatedArticles: ArticleRelatedResponseType[] = [];
@@ -38,7 +39,8 @@ export class ArticleComponent implements OnInit {
               private messageService: MessageService,
               private authService: AuthService,
               private commentService: CommentService,
-              private fb: FormBuilder) {
+              private fb: FormBuilder,
+              private errorResponseService: ErrorResponseService) {
     // Устанавливаем флаг авторизации
     this.isLogged = this.authService.getIsLoggedIn();
   }
@@ -87,17 +89,7 @@ export class ArticleComponent implements OnInit {
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.error && errorResponse.message) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-            throw new Error(errorResponse.error.message);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка получения связанных статей'
-            });
-            throw new Error(errorResponse.error.message);
-          }
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения связанных статей')
         }
       });
   }
@@ -129,21 +121,10 @@ export class ArticleComponent implements OnInit {
           if (this.isLogged) {
             this.getArticleCommentActions();
           }
-
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.error && errorResponse.message) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-            throw new Error(errorResponse.error.message);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка получения статьи'
-            });
-            throw new Error(errorResponse.error.message);
-          }
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения статьи')
         }
       });
   }
@@ -205,17 +186,7 @@ export class ArticleComponent implements OnInit {
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.error && errorResponse.message) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-            throw new Error(errorResponse.error.message);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка получения реакций статьи'
-            });
-            throw new Error(errorResponse.error.message);
-          }
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения реакций статьи');
         }
       })
   }
@@ -256,17 +227,7 @@ export class ArticleComponent implements OnInit {
             },
 
             error: (errorResponse: HttpErrorResponse) => {
-              if (errorResponse.error && errorResponse.message) {
-                this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-                throw new Error(errorResponse.error.message);
-              } else {
-                this.messageService.add({
-                  severity: 'error',
-                  summary: 'Ошибка',
-                  detail: 'Ошибка добавления комментария'
-                });
-                throw new Error(errorResponse.error.message);
-              }
+              this.errorResponseService.errorResponse(errorResponse, 'Ошибка добавления комментария');
             }
           })
       }
@@ -309,17 +270,7 @@ export class ArticleComponent implements OnInit {
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.error && errorResponse.message) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-            throw new Error(errorResponse.error.message);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка получения комментариев'
-            });
-            throw new Error(errorResponse.error.message);
-          }
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения комментариев');
         }
       });
   }
@@ -404,22 +355,16 @@ export class ArticleComponent implements OnInit {
           },
 
           error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.message) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-              throw new Error(errorResponse.error.message);
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Ошибка добавления реакции'
-              });
-              throw new Error(errorResponse.error.message);
-            }
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка добавления реакции');
           }
         });
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Вы не авторизованы'});
       return;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.authService.isLogged$.unsubscribe();
   }
 }

@@ -1,17 +1,18 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from "../../../core/auth/auth.service";
 import {UserInfoResponseType} from "../../types/user-info-response.type";
 import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Router} from "@angular/router";
 import {MenuItem, MessageService} from "primeng/api";
+import {ErrorResponseService} from "../../services/error-response.service";
 
 @Component({
   selector: 'app-header',
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss']
 })
-export class HeaderComponent implements OnInit {
+export class HeaderComponent implements OnInit, OnDestroy {
   isLogged: boolean = false;
   userInfo: UserInfoResponseType | null = null;
   userInfoName: string = '';
@@ -19,7 +20,8 @@ export class HeaderComponent implements OnInit {
 
   constructor(private authService: AuthService,
               public router: Router,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private errorResponseService: ErrorResponseService) {
     // Устанавливаем флаг авторизации
     this.isLogged = this.authService.getIsLoggedIn();
 
@@ -78,17 +80,7 @@ export class HeaderComponent implements OnInit {
 
           },
           error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.message) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-              throw new Error(errorResponse.error.message);
-            } else {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: 'Ошибка получения данных о пользователе'
-              });
-              throw new Error('Ошибка получения данных о пользователе');
-            }
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения данных о пользователе')
           }
         });
       }
@@ -119,5 +111,9 @@ export class HeaderComponent implements OnInit {
     this.authService.removeUserInfoOnLocalStorage();
     this.messageService.add({severity: 'success', summary: 'Успешно', detail: 'Вы вышли из системы'});
     this.router.navigate(['/']);
+  }
+
+  ngOnDestroy(): void {
+    this.authService.isLogged$.unsubscribe();
   }
 }

@@ -6,6 +6,7 @@ import {LoginResponseType} from "../../../shared/types/login-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {AuthService} from "../../../core/auth/auth.service";
 import {MessageService} from "primeng/api";
+import {ErrorResponseService} from "../../../shared/services/error-response.service";
 
 @Component({
   selector: 'app-login',
@@ -22,7 +23,8 @@ export class LoginComponent {
   constructor(private fb: FormBuilder,
               private authService: AuthService,
               private router: Router,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private errorResponseService: ErrorResponseService) {
   }
 
   /**
@@ -61,13 +63,7 @@ export class LoginComponent {
             this.router.navigate(['/']);
           },
           error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.message) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-              throw new Error(errorResponse.error.message);
-            } else {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка авторизации'});
-              throw new Error('Ошибка авторизации');
-            }
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка авторизации');
           }
         });
     }

@@ -7,33 +7,14 @@ export class TextLengthPipe implements PipeTransform {
   /**
    * Преобразовать текст
    * @param text текст
+   * @param textLength максимальное количество симовлов
    */
-  transform(text: string): string {
+  transform(text: string, textLength: number): string {
     let result: string = '';
-    if (text.length <= 200) {
+    if (text.length <= textLength) {
       result = text;
-    } else if (text.length > 200) {
-      result = text.slice(0, 200) + '...';
-    }
-    return result;
-  }
-}
-
-@Pipe({
-  name: 'titleLength'
-})
-
-export class TitleLengthPipe implements PipeTransform {
-  /**
-   * Преобразовать оглавление
-   * @param text текст
-   */
-  transform(text: string): string {
-    let result: string = '';
-    if (text.length <= 80) {
-      result = text;
-    } else if (text.length > 80) {
-      result = text.slice(0, 80) + '...';
+    } else if (text.length > textLength) {
+      result = text.slice(0, textLength) + '...';
     }
     return result;
   }

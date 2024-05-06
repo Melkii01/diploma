@@ -9,9 +9,10 @@ import {ActiveParamsUtil} from "../../../shared/utils/active-params.utils";
 import {AppliedFilterType} from "../../../shared/types/applied-filter.type";
 import {CategoryResponseType} from "../../../shared/types/category-response.type";
 import {DefaultResponseType} from "../../../shared/types/default-response.type";
-import {ArticleResponseType} from "../../../shared/types/article-response.type";
 import {MessageService} from "primeng/api";
 import {ArticlesResponseType} from "../../../shared/types/articles-response.type";
+import {ErrorResponseService} from "../../../shared/services/error-response.service";
+import {HttpErrorResponse} from "@angular/common/http";
 
 @Component({
   selector: 'app-articles',
@@ -30,69 +31,83 @@ export class ArticlesComponent implements OnInit {
               private categoryService: CategoryService,
               private activatedRoute: ActivatedRoute,
               private router: Router,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private errorResponseService: ErrorResponseService) {
   }
 
   ngOnInit(): void {
     // Зарос на список категорий
     this.categoryService.getCategories()
-      .subscribe((data: CategoryResponseType[]): void => {
-        this.categories = data;
+      .subscribe({
+        next: (data: CategoryResponseType[]): void => {
+          this.categories = data;
 
-        // Ищем параметры фильтров в url
-        this.activatedRoute.queryParams
-          .pipe(
-            debounceTime(500)
-          )
-          .subscribe(params => {
+          // Ищем параметры фильтров в url
+          this.activatedRoute.queryParams
+            .pipe(
+              debounceTime(500)
+            )
+            .subscribe({
+              next: params => {
 
-            // Возвращает объект с параметрами из url
-            this.activeParams = ActiveParamsUtil.processParams(params);
+                // Возвращает объект с параметрами из url
+                this.activeParams = ActiveParamsUtil.processParams(params);
 
-            // Переменная для записи примененных фильтров
-            this.appliedFilters = [];
+                // Переменная для записи примененных фильтров
+                this.appliedFilters = [];
 
-            // Находим фильтра из url параметра
-            this.activeParams.categories.forEach(url => {
-              const foundType = this.categories.find((category: CategoryResponseType): boolean => category.url === url);
+                // Находим фильтра из url параметра
+                this.activeParams.categories.forEach(url => {
+                  const foundType = this.categories.find((category: CategoryResponseType): boolean => category.url === url);
 
-              // Если нашли записываем в переменную примененных фильтров
-              if (foundType) {
-                this.appliedFilters.push({
-                  name: foundType.name,
-                  urlParam: foundType.url
-                })
+                  // Если нашли записываем в переменную примененных фильтров
+                  if (foundType) {
+                    this.appliedFilters.push({
+                      name: foundType.name,
+                      urlParam: foundType.url
+                    })
+                  }
+                });
+
+                // Запрос на список статей
+                this.articleService.getArticles(this.activeParams)
+                  .subscribe({
+                    next: (data: ArticlesResponseType | DefaultResponseType): void => {
+                      let error = null;
+
+                      // Если есть ошибка записываем в переменную error
+                      if ((data as DefaultResponseType).error !== undefined) {
+                        error = (data as DefaultResponseType).message;
+                      }
+
+                      // Если есть ошибка выводим ошибку и останавливаем функцию
+                      if (error) {
+                        this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
+                        throw new Error(error);
+                      }
+
+                      // Записываем массив страниц и данные
+                      data = data as ArticlesResponseType;
+                      this.pages = [];
+                      for (let i = 1; i <= data.pages; i++) {
+                        this.pages.push(i);
+                      }
+                      this.articles = data.items;
+                    },
+                    error: (errorResponse: HttpErrorResponse): void => {
+                      this.errorResponseService.errorResponse(errorResponse,'Ошибка полчуения  статей');
+                    }
+                  });
+              },
+              error: (errorResponse: HttpErrorResponse): void => {
+                this.errorResponseService.errorResponse(errorResponse,'Ошибка получения параметров в url');
               }
             });
-
-            // Запрос на список статей
-            this.articleService.getArticles(this.activeParams)
-              .subscribe({
-                next: (data: ArticlesResponseType | DefaultResponseType): void => {
-                  let error = null;
-
-                  // Если есть ошибка записываем в переменную error
-                  if ((data as DefaultResponseType).error !== undefined) {
-                    error = (data as DefaultResponseType).message;
-                  }
-
-                  // Если есть ошибка выводим ошибку и останавливаем функцию
-                  if (error) {
-                    this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
-                    throw new Error(error);
-                  }
-
-                  // Записываем массив страниц и данные
-                  data = data as ArticlesResponseType;
-                  this.pages = [];
-                  for (let i = 1; i <= data.pages; i++) {
-                    this.pages.push(i);
-                  }
-                  this.articles = data.items;
-                }
-              });
-          })
-      })
+        },
+        error: (errorResponse: HttpErrorResponse): void => {
+          this.errorResponseService.errorResponse(errorResponse,'Ошибка получения категорий');
+        }
+      });
   }
 
   /**
@@ -103,8 +118,10 @@ export class ArticlesComponent implements OnInit {
     this.activeParams.categories = this.activeParams.categories.filter((item: string): boolean => item !== appliedFilter.urlParam);
 
     this.activeParams.page = 1;
-    this.router.navigate(['/articles'], {
-      queryParams: this.activeParams
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.activeParams,
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -131,13 +148,16 @@ export class ArticlesComponent implements OnInit {
       this.activeParams.categories.push(String(filter))
     }
 
+    console.log(this.activeParams)
     // Переключаемся на первую страницу
     this.activeParams.page = 1;
 
     // Отображаем страницу с новыми параметрами url
-    this.router.navigate(['/articles'], {
-      queryParams: this.activeParams
-    })
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.activeParams,
+      queryParamsHandling: 'merge'
+    });
   }
 
   /**
@@ -155,8 +175,10 @@ export class ArticlesComponent implements OnInit {
   openPage(page: number) {
     this.activeParams.page = page;
 
-    this.router.navigate(['/articles'], {
-      queryParams: this.activeParams
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.activeParams,
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -168,8 +190,10 @@ export class ArticlesComponent implements OnInit {
       this.activeParams.page--;
     }
 
-    this.router.navigate(['/articles'], {
-      queryParams: this.activeParams
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.activeParams,
+      queryParamsHandling: 'merge'
     });
   }
 
@@ -181,8 +205,10 @@ export class ArticlesComponent implements OnInit {
       this.activeParams.page++;
     }
 
-    this.router.navigate(['/articles'], {
-      queryParams: this.activeParams
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: this.activeParams,
+      queryParamsHandling: 'merge'
     });
   }
 }

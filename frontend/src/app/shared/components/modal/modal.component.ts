@@ -6,6 +6,7 @@ import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {Subscription} from "rxjs";
 import {MessageService} from "primeng/api";
+import {ErrorResponseService} from "../../services/error-response.service";
 
 @Component({
   selector: 'app-modal',
@@ -34,7 +35,8 @@ export class ModalComponent implements OnInit, OnDestroy {
   constructor(private fb: FormBuilder,
               private modalService: ModalService,
               private requestsService: RequestsService,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private errorResponseService:ErrorResponseService) {
   }
 
   ngOnInit(): void {
@@ -50,13 +52,6 @@ export class ModalComponent implements OnInit, OnDestroy {
       this.title = data.title;
       this.buttonText = data.buttonText;
     }));
-  }
-
-  /**
-   *  Отписывает от всех подписок
-   */
-  ngOnDestroy(): void {
-    this.subs.unsubscribe();
   }
 
   /**
@@ -108,15 +103,16 @@ export class ModalComponent implements OnInit, OnDestroy {
             }, 7000);
           },
           error: (errorResponse: HttpErrorResponse): void => {
-            if (errorResponse.error && errorResponse.message) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-              throw new Error(errorResponse.error.message);
-            } else {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка отправки'});
-              throw new Error(errorResponse.error.message);
-            }
+            this.errorResponseService.errorResponse(errorResponse,'Ошибка отправки')
           }
         });
     }
+  }
+
+  /**
+   *  Отписывает от всех подписок
+   */
+  ngOnDestroy(): void {
+    this.subs.unsubscribe();
   }
 }

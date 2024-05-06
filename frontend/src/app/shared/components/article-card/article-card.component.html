@@ -12,11 +12,11 @@
 
   <div class="popular-articles-item-texts">
     <div class="popular-articles-item-name">
-      {{ article.title | titleLength }}
+      {{ article.title | textLength : 80 }}
     </div>
 
     <div class="popular-articles-item-description">
-      {{ article.description | textLength }}
+      {{ article.description | textLength : 200}}
     </div>
   </div>
 

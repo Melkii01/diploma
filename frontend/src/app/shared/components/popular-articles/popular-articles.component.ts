@@ -4,6 +4,7 @@ import {ArticlesService} from "../../services/articles.service";
 import {DefaultResponseType} from "../../types/default-response.type";
 import {HttpErrorResponse} from "@angular/common/http";
 import {MessageService} from "primeng/api";
+import {ErrorResponseService} from "../../services/error-response.service";
 
 @Component({
   selector: 'app-popular-articles',
@@ -14,7 +15,8 @@ export class PopularArticlesComponent implements OnInit {
   popularArticles: ArticleRelatedResponseType[] = [];
 
   constructor(private articleService: ArticlesService,
-              private messageService: MessageService) {
+              private messageService: MessageService,
+              private errorResponseService:ErrorResponseService) {
   }
 
   ngOnInit(): void {
@@ -39,17 +41,7 @@ export class PopularArticlesComponent implements OnInit {
           this.popularArticles = data as ArticleRelatedResponseType[];
         },
         error: (errorResponse: HttpErrorResponse) => {
-          if (errorResponse.error && errorResponse.message) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-            throw new Error(errorResponse.error.message);
-          } else {
-            this.messageService.add({
-              severity: 'error',
-              summary: 'Ошибка',
-              detail: 'Ошибка получения популярных статей'
-            });
-            throw new Error(errorResponse.error.message);
-          }
+          this.errorResponseService.errorResponse(errorResponse,'Ошибка получения популярных статей');
         }
       });
   }

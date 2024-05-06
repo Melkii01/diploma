@@ -6,6 +6,7 @@ import {FormBuilder, Validators} from "@angular/forms";
 import {AuthService} from "../../../core/auth/auth.service";
 import {Router} from "@angular/router";
 import {MessageService} from "primeng/api";
+import {ErrorResponseService} from "../../../shared/services/error-response.service";
 
 @Component({
   selector: 'app-signup',
@@ -23,7 +24,8 @@ export class SignupComponent {
   constructor(private fb: FormBuilder,
               private authService: AuthService,
               private messageService: MessageService,
-              private router: Router) {
+              private router: Router,
+              private errorResponseService: ErrorResponseService) {
   }
 
   /**
@@ -63,13 +65,7 @@ export class SignupComponent {
             this.router.navigate(['/']);
           },
           error: (errorResponse: HttpErrorResponse) => {
-            if (errorResponse.error && errorResponse.message) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: errorResponse.error.message});
-              throw new Error(errorResponse.error.message);
-            } else {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Ошибка регистрации'});
-              throw new Error(errorResponse.error.message);
-            }
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка регистрации')
           }
         })
     }
