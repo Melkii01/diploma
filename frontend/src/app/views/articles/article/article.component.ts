@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
-import {debounceTime} from "rxjs";
+import {debounceTime, Subscription} from "rxjs";
 import {ArticlesService} from "../../../shared/services/articles.service";
 import {DefaultResponseType} from "../../../shared/types/default-response.type";
 import {ArticleRelatedResponseType} from "../../../shared/types/article-related-response.type";
@@ -32,6 +32,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   });
   offset: number = 3;
   userCommentActions: CommentActionsType[] = [];
+  private subs: Subscription = new Subscription();
 
   constructor(private activatedRoute: ActivatedRoute,
               private router: Router,
@@ -46,6 +47,11 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    // Следит за авторизацией пользователя
+    this.subs.add(this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
+      this.isLogged = isLoggedIn;
+    }));
+
     // Получаем url статьи
     this.activatedRoute.params
       .pipe(
@@ -58,10 +64,6 @@ export class ArticleComponent implements OnInit, OnDestroy {
         this.getArticle();
       });
 
-    // Следит за авторизацией пользователя
-    this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
-      this.isLogged = isLoggedIn;
-    });
   }
 
   /**
@@ -365,6 +367,6 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.authService.isLogged$.unsubscribe();
+    this.subs.unsubscribe();
   }
 }
