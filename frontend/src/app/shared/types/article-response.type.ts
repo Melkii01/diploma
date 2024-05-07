@@ -1,4 +1,3 @@
-import {CommentsResponseType} from "./comments-response.type";
 import {CommentType} from "./comment.type";
 
 export type ArticleResponseType = {
