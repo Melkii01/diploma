@@ -24,7 +24,7 @@ import {MessageService} from "primeng/api";
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
-    {provide:MessageService}
+    MessageService
   ],
   bootstrap: [AppComponent]
 })

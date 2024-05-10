@@ -71,7 +71,13 @@ export class ArticlesComponent implements OnInit {
           }
         });
         return this.articleService.getArticles(this.activeParams);
-      }))
+      }),
+
+      catchError(error => {
+        this.errorResponseService.errorResponse(error, 'Ошибка получения статей');
+        throw new Error(error);
+      }),
+    )
       .subscribe({
         next: (data) => {
           let error = null;

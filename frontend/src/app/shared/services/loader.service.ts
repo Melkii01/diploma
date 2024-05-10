@@ -20,6 +20,6 @@ export class LoaderService {
   hide() {
     setTimeout(()=>{
       this.isShowed$.next(false);
-    },400);
+    },500);
   }
 }

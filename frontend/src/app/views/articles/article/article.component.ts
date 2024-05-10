@@ -1,6 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
-import {debounceTime, Subscription} from "rxjs";
+import {ActivatedRoute, Params, Router} from "@angular/router";
+import {catchError, combineLatest, concatMap, debounceTime, mergeMap, of, Subscription} from "rxjs";
 import {ArticlesService} from "../../../shared/services/articles.service";
 import {DefaultResponseType} from "../../../shared/types/default-response.type";
 import {ArticleRelatedResponseType} from "../../../shared/types/article-related-response.type";
@@ -46,7 +46,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
     this.isLogged = this.authService.getIsLoggedIn();
   }
 
-  ngOnInit(): void {
+  ngOnInit() {
     // Следит за авторизацией пользователя
     this.subs.add(this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = isLoggedIn;
@@ -55,154 +55,159 @@ export class ArticleComponent implements OnInit, OnDestroy {
     // Получаем url статьи
     this.activatedRoute.params
       .pipe(
-        debounceTime(500)
+        debounceTime(500),
+
+        mergeMap((params: Params) => {
+          // Сохраняем url и запрашиваем связанные статьи и основную статью
+          this.url = params['url'];
+          return combineLatest([this.articleService.getRelatedArticle(this.url), this.articleService.getArticle(this.url)]);
+        }),
+
+        catchError(error => {
+          this.errorResponseService.errorResponse(error, 'Ошибка получения параметров url');
+          throw new Error(error);
+        }),
+
+        mergeMap(([articleRelated, article]) => {
+          // Отображаем полученные связанные статьи и основную статью
+          this.showRelatedArticle(articleRelated);
+          return this.showArticle(article);
+        }),
+
+        catchError(error => {
+          this.errorResponseService.errorResponse(error, 'Ошибка отображения связанных статей или основной статьи');
+          throw new Error(error);
+        })
       )
-      .subscribe(params => {
-        // Отправляем url статьи для получения статьи и связанной статьи
-        this.url = params['url'];
-        this.getRelatedArticle();
-        this.getArticle();
-      });
-
-  }
-
-  /**
-   * Отправка запроса на получение связанной статьи
-   */
-  getRelatedArticle(): void {
-    this.articleService.getRelatedArticle(this.url)
       .subscribe({
-        next: (data: DefaultResponseType | ArticleRelatedResponseType[]) => {
-          let error = null;
-
-          // Если есть ошибка записываем в переменную error
-          if ((data as DefaultResponseType).error !== undefined) {
-            error = (data as DefaultResponseType).message;
+        next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
+          // Если пользователь авторизован, отображаем его реакции на комментарии
+          if (comments) {
+            this.showArticleCommentActions(comments);
           }
-
-          // Если есть ошибка выводим ошибку и останавливаем функцию
-          if (error) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
-            throw new Error(error);
-          }
-
-          // Записываем данные в переменную
-          this.relatedArticles = data as ArticleRelatedResponseType[];
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения связанных статей')
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
         }
       });
   }
 
   /**
-   * Отправка запроса на получение основной статьи
+   * Отображает связанные статьи
    */
-  getArticle(): void {
-    this.articleService.getArticle(this.url)
-      .subscribe({
-        next: (data: DefaultResponseType | ArticleResponseType) => {
-          let error = null;
+  private showRelatedArticle(articleRelated: DefaultResponseType | ArticleRelatedResponseType[]) {
+    let error = null;
 
-          // Если есть ошибка записываем в переменную error
-          if ((data as DefaultResponseType).error !== undefined) {
-            error = (data as DefaultResponseType).message;
+    // Если есть ошибка записываем в переменную error
+    if ((articleRelated as DefaultResponseType).error !== undefined) {
+      error = (articleRelated as DefaultResponseType).message;
+    }
+
+    // Если есть ошибка выводим ошибку и останавливаем функцию
+    if (error) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
+      throw new Error(error);
+    }
+
+    // Записываем данные в переменную
+    this.relatedArticles = articleRelated as ArticleRelatedResponseType[];
+  }
+
+
+  /**
+   * Отображает основную статью
+   */
+  private showArticle(article: DefaultResponseType | ArticleResponseType) {
+    let error = null;
+
+    // Если есть ошибка записываем в переменную error
+    if ((article as DefaultResponseType).error !== undefined) {
+      error = (article as DefaultResponseType).message;
+    }
+
+    // Если есть ошибка выводим ошибку и останавливаем функцию
+    if (error) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
+      throw new Error(error);
+    }
+
+    // Записываем данные в переменную
+    this.article = article as ArticleResponseType;
+
+    // Если авторизован получаем реакции пользователя
+    if (this.isLogged) {
+      return this.commentService.getArticleCommentActions(this.article.id);
+    }
+    return of(null);
+  }
+
+  /**
+   * Отображает реакции пользователя к комментариям статьи
+   * @param comments комментарии
+   * @param additionalComment true - если отображаем дополнительные комментарии
+   */
+  private showArticleCommentActions(comments: DefaultResponseType | CommentActionsType[], additionalComment: boolean = false) {
+    let error = null;
+
+    // Если есть ошибка записываем в переменную error
+    if ((comments as DefaultResponseType).error !== undefined) {
+      error = (comments as DefaultResponseType).message;
+    }
+
+    // Если есть ошибка выводим ошибку и останавливаем функцию
+    if (error) {
+      this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
+      throw new Error(error);
+    }
+
+    // Записываем данные в переменную
+    this.userCommentActions = comments as CommentActionsType[];
+
+    if (additionalComment) {
+      // Добавляем в дополнительных комментариях статьи, реакции пользователя, если он авторизовался
+      this.additionalComments.filter((item: CommentType) => {
+        return (comments as CommentActionsType[]).forEach(((action: CommentActionsType) => {
+          if (action.comment === item.id) {
+            if (action.action === CommentActionEnum.like) {
+              item.user.like = true;
+            }
+            if (action.action === CommentActionEnum.dislike) {
+              item.user.dislike = true;
+            }
           }
-
-          // Если есть ошибка выводим ошибку и останавливаем функцию
-          if (error) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
-            throw new Error(error);
-          }
-
-          // Записываем данные в переменную
-          this.article = data as ArticleResponseType;
-
-          // Если авторизован получаем реакции пользователя
-          if (this.isLogged) {
-            this.getArticleCommentActions();
-          }
-        },
-
-        error: (errorResponse: HttpErrorResponse) => {
-          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения статьи')
-        }
+        }))
       });
+
+    } else {
+      // Добавляем в первые три комментария статьи, реакции пользователя, если он авторизовался
+      this.article.comments.map((item: CommentType) => {
+        return (comments as CommentActionsType[]).forEach(((action: CommentActionsType) => {
+          if (action.comment === item.id) {
+            if (action.action === CommentActionEnum.like) {
+              item.user.like = true;
+            }
+            if (action.action === CommentActionEnum.dislike) {
+              item.user.dislike = true;
+            }
+          }
+        }))
+      });
+    }
   }
 
   /**
-   * Отправка запроса на получение реакций пользователя к комментариям статьи
-   * @param additionalComment true - если получаем дополнительные комментарии
-   */
-  getArticleCommentActions(additionalComment: boolean = false) {
-    this.commentService.getArticleCommentActions(this.article.id)
-      .subscribe({
-        next: (data: DefaultResponseType | CommentActionsType[]) => {
-          let error = null;
-
-          // Если есть ошибка записываем в переменную error
-          if ((data as DefaultResponseType).error !== undefined) {
-            error = (data as DefaultResponseType).message;
-          }
-
-          // Если есть ошибка выводим ошибку и останавливаем функцию
-          if (error) {
-            this.messageService.add({severity: 'error', summary: 'Ошибка', detail: error});
-            throw new Error(error);
-          }
-
-          // Записываем данные в переменную
-          this.userCommentActions = data as CommentActionsType[];
-
-          if (additionalComment) {
-            // Добавляем в дополнительных комментариях статьи, реакции пользователя, если он авторизовался
-            this.additionalComments.filter((item: CommentType) => {
-              return (data as CommentActionsType[]).forEach(((action: CommentActionsType) => {
-                if (action.comment === item.id) {
-                  if (action.action === CommentActionEnum.like) {
-                    item.user.like = true;
-                  }
-                  if (action.action === CommentActionEnum.dislike) {
-                    item.user.dislike = true;
-                  }
-                }
-              }))
-            });
-
-          } else {
-            // Добавляем в первые три комментария статьи, реакции пользователя, если он авторизовался
-            this.article.comments.map((item: CommentType) => {
-              return (data as CommentActionsType[]).forEach(((action: CommentActionsType) => {
-                if (action.comment === item.id) {
-                  if (action.action === CommentActionEnum.like) {
-                    item.user.like = true;
-                  }
-                  if (action.action === CommentActionEnum.dislike) {
-                    item.user.dislike = true;
-                  }
-                }
-              }))
-            });
-          }
-        },
-
-        error: (errorResponse: HttpErrorResponse) => {
-          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения реакций статьи');
-        }
-      })
-  }
-
-  /**
-   * Отправляет запрос на добавление комментарии к статье только авторизованным пользователям
+   * Добавляет комментарию к статье только авторизованному пользователю
    */
   addComment() {
+    // Если пользователь авторизован
     if (this.isLogged) {
 
+      // Если форма комментарии валидна
       if (this.commentForm.valid && this.commentForm.value.comment) {
         this.commentService.addComment({text: this.commentForm.value.comment, article: this.article.id})
-          .subscribe({
-            next: (data: DefaultResponseType): void => {
+          .pipe(
+            concatMap((data: DefaultResponseType) => {
 
               // Если есть ошибка выводим ошибку и останавливаем функцию
               if (data.error) {
@@ -224,12 +229,33 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 this.offset = 3;
               }
 
-              // Перезагружаем статью, для отображения последних трех комментариев
-              this.getArticle();
+              // Получаем основную статью
+              return this.articleService.getArticle(this.url);
+            }),
+
+            catchError(error => {
+              this.errorResponseService.errorResponse(error, 'Ошибка добавления комментария');
+              throw new Error(error);
+            }),
+
+            // Отображаем основную статью
+            concatMap((data: DefaultResponseType | ArticleResponseType) => this.showArticle(data)),
+
+            catchError(error => {
+              this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
+              throw new Error(error);
+            }),
+          )
+          .subscribe({
+            next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
+              // Если пользователь авторизован, отображаем его реакции на комментарии
+              if (comments) {
+                this.showArticleCommentActions(comments);
+              }
             },
 
             error: (errorResponse: HttpErrorResponse) => {
-              this.errorResponseService.errorResponse(errorResponse, 'Ошибка добавления комментария');
+              this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
             }
           })
       }
@@ -237,18 +263,18 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Отправить запрос на получение дополнительных комментариев
+   * Получает дополнительные комментарии
    */
   getComments() {
 
     this.commentService.getComments({article: this.article.id, offset: this.offset})
-      .subscribe({
-        next: (data: DefaultResponseType | CommentsResponseType) => {
+      .pipe(
+        concatMap((comments: DefaultResponseType | CommentsResponseType) => {
           let error = null;
 
           // Если есть ошибка записываем в переменную error
-          if ((data as DefaultResponseType).error !== undefined) {
-            error = (data as DefaultResponseType).message;
+          if ((comments as DefaultResponseType).error !== undefined) {
+            error = (comments as DefaultResponseType).message;
           }
 
           // Если есть ошибка выводим ошибку и останавливаем функцию
@@ -258,50 +284,71 @@ export class ArticleComponent implements OnInit, OnDestroy {
           }
 
           // Добавляем комменты в массив комментов
-          (data as CommentsResponseType).comments.forEach(((item: CommentType): void => {
+          (comments as CommentsResponseType).comments.forEach(((item: CommentType) => {
             this.additionalComments.push(item);
           }));
 
           // Увеличиваем пропуск комментариев
           this.offset += 10;
 
-          // Добавляем в дополнительных комментариях статьи, реакции пользователя, если он авторизовался
+          // Если авторизован получаем реакции пользователя
           if (this.isLogged) {
-            this.getArticleCommentActions(true);
+            return this.commentService.getArticleCommentActions(this.article.id);
+          }
+          return of(null);
+        }),
+
+        catchError(error => {
+          this.errorResponseService.errorResponse(error, 'Ошибка получения дополнительных комментарий');
+          throw new Error(error);
+        }),
+      )
+      .subscribe({
+        next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
+          // Если пользователь авторизован, отображаем его реакции на комментарии
+          if (comments) {
+            this.showArticleCommentActions(comments);
           }
         },
 
         error: (errorResponse: HttpErrorResponse) => {
-          this.errorResponseService.errorResponse(errorResponse, 'Ошибка получения комментариев');
+          this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
         }
       });
   }
 
   /**
-   * Отправляет запрос на реакцию пользователя к комментарию
+   * Добавляет реакцию пользователя к комментарию
    * @param actionData идентификатор комментария, реакция на комментарий
    * @param additionalComment true - если комментарий является дополнительным
    */
-  applyActionToComment(actionData: CommentActionsType, additionalComment: boolean = false): void {
+  applyActionToComment(actionData: CommentActionsType, additionalComment: boolean = false) {
 
     // Если авторизован
     if (this.isLogged) {
 
       this.commentService.applyActionToComment(actionData.comment, actionData.action)
-        .subscribe({
-          next: (data: DefaultResponseType) => {
+        .pipe(
+          concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
 
             // Если есть ошибка выводим ошибку и останавливаем функцию
-            if (data.error) {
-              this.messageService.add({severity: 'error', summary: 'Ошибка', detail: data.message});
-              throw new Error(data.message);
+            if ((data as DefaultResponseType).error) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: (data as DefaultResponseType).message
+              });
+              throw new Error((data as DefaultResponseType).message);
             }
 
             // Уведомляем об успешности
-            this.messageService.add({severity: 'success', summary: 'Успешно', detail: data.message});
+            this.messageService.add({
+              severity: 'success',
+              summary: 'Успешно',
+              detail: (data as DefaultResponseType).message
+            });
 
             if (additionalComment) {
-
               // Если реакция была на дополнительных комментариях, перебираем массив дополнительных комментарий
               this.additionalComments.map((comment) => {
 
@@ -350,23 +397,60 @@ export class ArticleComponent implements OnInit, OnDestroy {
                 }
               });
 
+              return of(null);
             } else {
               // Если реакция была на первых трех комментариях, перезагружаем статью
-              this.getArticle();
+              return this.articleService.getArticle(this.url);
+            }
+
+          }),
+
+          catchError(error => {
+            this.errorResponseService.errorResponse(error, 'Ошибка добавления реакции');
+            throw new Error(error);
+          }),
+
+          concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
+            // Если есть ошибка выводим ошибку и останавливаем функцию
+            if ((data as DefaultResponseType).error) {
+              this.messageService.add({
+                severity: 'error',
+                summary: 'Ошибка',
+                detail: (data as DefaultResponseType).message
+              });
+              new Error((data as DefaultResponseType).message);
+              return of(null);
+            }
+
+            // Отображаем основную статью
+            return this.showArticle(data as ArticleResponseType);
+          }),
+
+          catchError(error => {
+            this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
+            throw new Error(error);
+          }),
+        )
+        .subscribe({
+          next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
+            // Если пользователь авторизован, отображаем его реакции на комментарии
+            if (comments) {
+              this.showArticleCommentActions(comments);
             }
           },
 
           error: (errorResponse: HttpErrorResponse) => {
-            this.errorResponseService.errorResponse(errorResponse, 'Ошибка добавления реакции');
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
           }
         });
+
     } else {
       this.messageService.add({severity: 'error', summary: 'Ошибка', detail: 'Вы не авторизованы'});
       return;
     }
   }
 
-  ngOnDestroy(): void {
+  ngOnDestroy() {
     this.subs.unsubscribe();
   }
 }
