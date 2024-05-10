@@ -47,6 +47,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+
     // Следит за авторизацией пользователя
     this.subs.add(this.authService.isLogged$.subscribe((isLoggedIn: boolean) => {
       this.isLogged = isLoggedIn;
@@ -59,6 +60,8 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
         mergeMap((params: Params) => {
           // Сохраняем url и запрашиваем связанные статьи и основную статью
+          this.offset = 3;
+
           this.url = params['url'];
           return combineLatest([this.articleService.getRelatedArticle(this.url), this.articleService.getArticle(this.url)]);
         }),
@@ -329,7 +332,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
       this.commentService.applyActionToComment(actionData.comment, actionData.action)
         .pipe(
-          concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
+          concatMap((data: DefaultResponseType | ArticleResponseType ) => {
 
             // Если есть ошибка выводим ошибку и останавливаем функцию
             if ((data as DefaultResponseType).error) {
@@ -405,10 +408,10 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
           }),
 
-          catchError(error => {
-            this.errorResponseService.errorResponse(error, 'Ошибка добавления реакции');
-            throw new Error(error);
-          }),
+          // catchError(error => {
+          //   this.errorResponseService.errorResponse(error, 'Ошибка добавления реакции');
+          //   throw new Error(error);
+          // }),
 
           concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
             // Если есть ошибка выводим ошибку и останавливаем функцию
@@ -426,22 +429,22 @@ export class ArticleComponent implements OnInit, OnDestroy {
             return this.showArticle(data as ArticleResponseType);
           }),
 
-          catchError(error => {
-            this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
-            throw new Error(error);
-          }),
+          // catchError(error => {
+          //   this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
+          //   throw new Error(error);
+          // }),
         )
         .subscribe({
           next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
             // Если пользователь авторизован, отображаем его реакции на комментарии
             if (comments) {
-              this.showArticleCommentActions(comments);
+             this.showArticleCommentActions(comments);
             }
           },
 
-          error: (errorResponse: HttpErrorResponse) => {
-            this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
-          }
+          // error: (errorResponse: HttpErrorResponse) => {
+          //   this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
+          // }
         });
 
     } else {
