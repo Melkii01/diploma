@@ -332,7 +332,7 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
       this.commentService.applyActionToComment(actionData.comment, actionData.action)
         .pipe(
-          concatMap((data: DefaultResponseType | ArticleResponseType ) => {
+          concatMap((data: DefaultResponseType | ArticleResponseType) => {
 
             // Если есть ошибка выводим ошибку и останавливаем функцию
             if ((data as DefaultResponseType).error) {
@@ -408,43 +408,46 @@ export class ArticleComponent implements OnInit, OnDestroy {
 
           }),
 
-          // catchError(error => {
-          //   this.errorResponseService.errorResponse(error, 'Ошибка добавления реакции');
-          //   throw new Error(error);
-          // }),
-
-          concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
-            // Если есть ошибка выводим ошибку и останавливаем функцию
-            if ((data as DefaultResponseType).error) {
-              this.messageService.add({
-                severity: 'error',
-                summary: 'Ошибка',
-                detail: (data as DefaultResponseType).message
-              });
-              new Error((data as DefaultResponseType).message);
-              return of(null);
-            }
-
-            // Отображаем основную статью
-            return this.showArticle(data as ArticleResponseType);
+          catchError(error => {
+            this.errorResponseService.errorResponse(error, 'Ошибка добавления реакции');
+            throw new Error(error);
           }),
 
-          // catchError(error => {
-          //   this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
-          //   throw new Error(error);
-          // }),
+          concatMap((data: DefaultResponseType | ArticleResponseType | null) => {
+            if (data) {
+              // Если есть ошибка выводим ошибку и останавливаем функцию
+              if ((data as DefaultResponseType).error) {
+                this.messageService.add({
+                  severity: 'error',
+                  summary: 'Ошибка',
+                  detail: (data as DefaultResponseType).message
+                });
+                new Error((data as DefaultResponseType).message);
+                return of(null);
+              }
+              // Отображаем основную статью
+              return this.showArticle(data as ArticleResponseType);
+            }
+
+            return of(null);
+          }),
+
+          catchError(error => {
+            this.errorResponseService.errorResponse(error, 'Ошибка отображения основной статьи');
+            throw new Error(error);
+          }),
         )
         .subscribe({
           next: (comments: CommentActionsType[] | DefaultResponseType | null) => {
             // Если пользователь авторизован, отображаем его реакции на комментарии
             if (comments) {
-             this.showArticleCommentActions(comments);
+              this.showArticleCommentActions(comments as CommentActionsType[]);
             }
           },
 
-          // error: (errorResponse: HttpErrorResponse) => {
-          //   this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
-          // }
+          error: (errorResponse: HttpErrorResponse) => {
+            this.errorResponseService.errorResponse(errorResponse, 'Ошибка отображения реакции пользователя на комментарии');
+          }
         });
 
     } else {

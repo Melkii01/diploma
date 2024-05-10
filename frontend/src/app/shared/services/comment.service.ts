@@ -55,7 +55,7 @@ export class CommentService {
    * Отправка запроса на получение реакций авторизованного пользователя ко всем комментариям статьи
    * @param id идентификатор статьи
    */
-  getArticleCommentActions(id: string): Observable<CommentActionsType[] | DefaultResponseType> {
+  getArticleCommentActions(id: string): Observable<CommentActionsType[] | DefaultResponseType |null> {
     return this.http.get<CommentActionsType[] | DefaultResponseType>(environment.api + 'comments/article-comment-actions', {
       params: {articleId: id}
     });
